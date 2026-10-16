@@ -5,8 +5,9 @@ Every configurable value lives here so the rest of the code never reads os.envir
 
 from enum import StrEnum
 from functools import lru_cache
+from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -38,6 +39,50 @@ class Settings(BaseSettings):
     database_url: SecretStr
     # Seconds to wait when opening a connection, so an unreachable database fails fast.
     database_connect_timeout: int = Field(default=5, ge=1, le=60)
+
+    # --- Search index (Qdrant) ---
+    qdrant_url: str = "http://127.0.0.1:6333"
+    qdrant_api_key: SecretStr | None = None
+    qdrant_collection: str = Field(default="policy_chunks", pattern=r"^[a-z0-9_]{1,64}$")
+
+    # --- Embeddings (fastembed, runs locally) ---
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    # Where the embedding model is downloaded to (git-ignored data/ folder).
+    embedding_cache_dir: str = "data/models"
+
+    # --- Language model (any OpenAI-compatible API: Ollama now, Azure OpenAI later) ---
+    llm_base_url: str = "http://127.0.0.1:11434/v1"
+    llm_model: str = "qwen3.5:9b"
+    # Ollama needs no key; a hosted provider's key must come from the secret store.
+    llm_api_key: SecretStr | None = None
+    llm_timeout_seconds: float = Field(default=180, gt=0, le=600)
+    # Turn off "thinking" output for models that support it: faster, and we only want JSON.
+    llm_disable_reasoning: bool = True
+
+    # --- Retrieval and answering ---
+    retrieval_top_k: int = Field(default=5, ge=1, le=20)
+    # Below this similarity the evidence is too weak: refer to HR without calling the LLM.
+    # Calibrated on the fictional samples with bge-small-en-v1.5: relevant 0.82-0.90,
+    # off-topic 0.43-0.60. Re-check on real policies (Phase 5 measures this properly).
+    retrieval_min_score: float = Field(default=0.65, ge=0, le=1)
+    question_max_chars: int = Field(default=1000, ge=50, le=5000)
+
+    # --- Authentication ---
+    # "dev" = the development stand-in (pick a predefined fictional test user by header).
+    # Not allowed outside development/test; real SSO replaces it (Phase 8).
+    auth_mode: Literal["dev"] = "dev"
+
+    @model_validator(mode="after")
+    def _dev_auth_only_in_development(self) -> "Settings":
+        if self.auth_mode == "dev" and self.environment not in (
+            Environment.DEVELOPMENT,
+            Environment.TEST,
+        ):
+            raise ValueError(
+                "auth_mode 'dev' is a development stand-in and must not run in "
+                f"{self.environment.value}; configure real authentication first"
+            )
+        return self
 
     @property
     def docs_enabled(self) -> bool:
