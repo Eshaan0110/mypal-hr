@@ -8,8 +8,9 @@ services:
     environment:
       POSTGRES_DB: mypal
       POSTGRES_USER: mypal
-      # Local-only throwaway password; override with MYPAL_DB_PASSWORD. Never reuse a real one.
-      POSTGRES_PASSWORD: ${MYPAL_DB_PASSWORD:-mypal_local_dev}
+      # No password is stored in this file. Compose reads MYPAL_DB_PASSWORD from the repo-root
+      # .env (git-ignored; copy .env.example) and refuses to start if it is missing.
+      POSTGRES_PASSWORD: ${MYPAL_DB_PASSWORD:?Set MYPAL_DB_PASSWORD in .env - see .env.example}
     ports:
       # Bound to localhost only, so the database is not reachable from the network.
       - "127.0.0.1:5432:5432"
