@@ -73,6 +73,41 @@ What the pipeline does:
 
 Sample policies in `../sample_data/` are **fictional**; see its README.
 
+## Asking questions (basic RAG)
+
+Prerequisites: Postgres and Qdrant running (`docker compose up -d`), Ollama running with the configured model (`ollama list` should show `qwen3.5:9b`). The embedding model (~70 MB) downloads into `data/models/` on first use.
+
+1. Ingest a policy (see above), then move it through the lifecycle. The approver must differ from the uploader (four-eyes rule):
+
+```bash
+uv run mypal-policy submit  <version-id> --actor dev-uploader@example.test
+uv run mypal-policy approve <version-id> --actor dev-reviewer@example.test
+uv run mypal-policy publish <version-id> --actor dev-reviewer@example.test
+```
+
+2. Ask, from the command line or the API:
+
+```bash
+uv run mypal-ask "How many sick leave days do I get?" --as dev-employee-north
+curl -X POST http://127.0.0.1:8000/api/chat -H "Content-Type: application/json" -H "X-Dev-User: dev-employee-north" -d "{\"message\": \"How many sick leave days do I get?\"}"
+```
+
+`uv run mypal-policy reindex` rebuilds the search index from Postgres (e.g. after changing the embedding model).
+
+**Development login stand-in.** Until SSO is available, `X-Dev-User` selects one of a few predefined *fictional* users (`dev-employee-north`, `dev-probationer-south`, `dev-trainee`, `dev-other-company`, `dev-hr-admin`). The caller can only pick a user, never set a company, location or category. Settings refuse to start in staging or production with this mode.
+
+How a question is answered (`answering/service.py`):
+
+1. **Guard** — personal-record requests (payslips, balances) and sensitive topics (harassment, grievances) are referred to HR immediately; sensitive topics get the confidential route.
+2. **Scope gate** — Postgres lists the versions this employee may see: active, already in effect, and matching their company / location / category. Unknown attributes only match "all" scopes.
+3. **Retrieve** — the question is embedded and Qdrant is searched *only inside that list*.
+4. **Confidence gate** — if no passage scores at least `MYPAL_RETRIEVAL_MIN_SCORE` (0.65), refer to HR without calling the model.
+5. **Generate** — the model receives passages labelled P1..Pn as data, with strict rules, and returns JSON (answer, citations, clarification question). The outcome is derived in code, not chosen by the model.
+6. **Validate** — citations must refer to supplied passages, and every number in the answer must appear in the cited passages. Any failure → referral.
+7. **Cite** — citations (policy, version, section, page, effective date, link) are built from Postgres, never from model text.
+
+Every question writes one `query_metrics` row (outcome, timings, tokens, top score) — no question text, no answer text, no user identity.
+
 ## Layout
 
 | Path | Responsibility |
@@ -84,6 +119,10 @@ Sample policies in `../sample_data/` are **fictional**; see its README.
 | `src/mypal/schemas/` | Pydantic request/response contracts |
 | `src/mypal/db/` | Engine/session handling, declarative base, ORM models |
 | `src/mypal/ingestion/` | File checks, PDF/DOCX parsers, quality report, chunker, draft storage, CLI |
+| `src/mypal/policies/` | Lifecycle transitions (submit, approve, publish/supersede) with audit; `mypal-policy` CLI |
+| `src/mypal/retrieval/` | Embeddings (fastembed), Qdrant index, scope gate |
+| `src/mypal/answering/` | Guard, prompts, language-model client, validator, answer pipeline; `mypal-ask` CLI |
+| `src/mypal/auth/` | `Principal` and the development login stand-in |
 | `src/mypal/observability/` | Request IDs and structured logging |
 | `scripts/` | Development scripts (fictional sample policy generator) |
 | `migrations/` | Alembic environment and migration scripts |
