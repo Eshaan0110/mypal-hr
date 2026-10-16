@@ -10,13 +10,13 @@ from tests.conftest import UNUSED_DATABASE_URL
 def test_settings_are_read_from_prefixed_environment_variables(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("MYPAL_ENVIRONMENT", "staging")
+    monkeypatch.setenv("MYPAL_ENVIRONMENT", "test")
     monkeypatch.setenv("MYPAL_CORS_ORIGINS", '["http://localhost:5173"]')
     monkeypatch.setenv("MYPAL_DATABASE_URL", UNUSED_DATABASE_URL)
 
     settings = Settings(_env_file=None)
 
-    assert settings.environment is Environment.STAGING
+    assert settings.environment is Environment.TEST
     assert settings.cors_origins == ["http://localhost:5173"]
 
 
@@ -41,9 +41,16 @@ def test_database_password_is_hidden_in_repr() -> None:
     assert "hunter2" not in str(settings.model_dump())
 
 
-def test_api_docs_are_disabled_in_production() -> None:
-    settings = Settings(_env_file=None, environment="production", database_url=UNUSED_DATABASE_URL)
-    client = TestClient(create_app(settings))
+@pytest.mark.parametrize("environment", ["staging", "production"])
+def test_dev_login_stand_in_is_refused_outside_development(environment: str) -> None:
+    with pytest.raises(ValidationError, match="development stand-in"):
+        Settings(_env_file=None, environment=environment, database_url=UNUSED_DATABASE_URL)
+
+
+def test_api_docs_are_disabled_in_production(settings: Settings) -> None:
+    # model_copy skips validation: production is otherwise refused until real login exists.
+    production = settings.model_copy(update={"environment": Environment.PRODUCTION})
+    client = TestClient(create_app(production))
 
     assert client.get("/api/docs").status_code == 404
     assert client.get("/api/openapi.json").status_code == 404
