@@ -7,10 +7,11 @@ FastAPI service for the My Pal HR policy chatbot prototype. Python 3.11, managed
 Prerequisites: uv and Docker Desktop.
 
 ```bash
+cp .env.example .env          # repo root: choose a local MYPAL_DB_PASSWORD (never commit .env)
 docker compose up -d          # from the repo root: starts Postgres on 127.0.0.1:5432
 cd backend
 uv sync                       # creates .venv with Python 3.11 and installs exactly what uv.lock lists
-cp .env.example .env          # local settings; MYPAL_DATABASE_URL is required
+cp .env.example .env          # local settings; put the same password in both database URLs
 uv run alembic upgrade head   # creates all tables
 ```
 

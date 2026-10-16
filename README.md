@@ -23,10 +23,11 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 Prerequisites: [uv](https://docs.astral.sh/uv/getting-started/installation/) (it downloads Python 3.11 itself if needed) and Docker Desktop.
 
 ```bash
+cp .env.example .env            # then set your own local MYPAL_DB_PASSWORD
 docker compose up -d
 cd backend
 uv sync
-cp .env.example .env
+cp .env.example .env            # then put the same password in both database URLs
 uv run alembic upgrade head
 uv run pytest
 uv run uvicorn mypal.main:create_app --factory --reload
