@@ -1,0 +1,27 @@
+# Local development services. Start with:  docker compose up -d
+# Qdrant is added in Phase 4, when the application first uses it.
+name: mypal
+
+services:
+  postgres:
+    image: postgres:16.10-alpine
+    environment:
+      POSTGRES_DB: mypal
+      POSTGRES_USER: mypal
+      # Local-only throwaway password; override with MYPAL_DB_PASSWORD. Never reuse a real one.
+      POSTGRES_PASSWORD: ${MYPAL_DB_PASSWORD:-mypal_local_dev}
+    ports:
+      # Bound to localhost only, so the database is not reachable from the network.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Runs once, on first start with an empty volume: creates the separate test database.
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mypal -d mypal"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
