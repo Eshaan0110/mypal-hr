@@ -1,5 +1,5 @@
 # Local development services. Start with:  docker compose up -d
-# Qdrant is added in Phase 4, when the application first uses it.
+# Secrets come from the repo-root .env (git-ignored; copy .env.example).
 name: mypal
 
 services:
@@ -24,5 +24,19 @@ services:
       timeout: 3s
       retries: 10
 
+  # Vector search index. A rebuildable copy derived from Postgres - never the source of truth.
+  qdrant:
+    image: qdrant/qdrant:v1.19.1
+    environment:
+      # Every request must carry this key. Read from .env, never stored in this file.
+      QDRANT__SERVICE__API_KEY: ${MYPAL_QDRANT_API_KEY:?Set MYPAL_QDRANT_API_KEY in .env - see .env.example}
+      # Do not send usage telemetry outside the machine.
+      QDRANT__TELEMETRY_DISABLED: "true"
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrantdata:/qdrant/storage
+
 volumes:
   pgdata:
+  qdrantdata:
