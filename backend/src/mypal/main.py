@@ -5,16 +5,27 @@ Using a factory (instead of a module-level `app`) means importing this module ha
 and tests can create apps with their own Settings.
 """
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from mypal.api import health
 from mypal.config import Settings, get_settings
+from mypal.db.session import create_db_engine, create_session_factory
 from mypal.errors import register_exception_handlers
 from mypal.observability.logging import configure_logging
 from mypal.observability.request_id import REQUEST_ID_HEADER, RequestIdMiddleware
 
 API_PREFIX = "/api"
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    yield
+    # On shutdown, close pooled database connections cleanly.
+    app.state.engine.dispose()
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -26,8 +37,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         docs_url="/api/docs" if settings.docs_enabled else None,
         redoc_url=None,
         openapi_url="/api/openapi.json" if settings.docs_enabled else None,
+        lifespan=lifespan,
     )
     app.state.settings = settings
+    app.state.engine = create_db_engine(settings)
+    app.state.session_factory = create_session_factory(app.state.engine)
 
     if settings.cors_origins:
         app.add_middleware(
