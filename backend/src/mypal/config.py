@@ -6,7 +6,7 @@ Every configurable value lives here so the rest of the code never reads os.envir
 from enum import StrEnum
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     log_json: bool = True
     # Browser origins allowed to call the API (the Vite dev server in Phase 6).
     cors_origins: list[str] = Field(default_factory=list)
+
+    # Required, no default: the app refuses to start rather than guess a database.
+    # SecretStr keeps the password out of logs and reprs; read it with .get_secret_value().
+    database_url: SecretStr
+    # Seconds to wait when opening a connection, so an unreachable database fails fast.
+    database_connect_timeout: int = Field(default=5, ge=1, le=60)
 
     @property
     def docs_enabled(self) -> bool:
