@@ -1,0 +1,45 @@
+"""Application factory.
+
+Run with:  uv run uvicorn mypal.main:create_app --factory --reload
+Using a factory (instead of a module-level `app`) means importing this module has no side effects,
+and tests can create apps with their own Settings.
+"""
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from mypal.api import health
+from mypal.config import Settings, get_settings
+from mypal.errors import register_exception_handlers
+from mypal.observability.logging import configure_logging
+from mypal.observability.request_id import REQUEST_ID_HEADER, RequestIdMiddleware
+
+API_PREFIX = "/api"
+
+
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
+    configure_logging(settings)
+
+    app = FastAPI(
+        title=settings.app_name,
+        docs_url="/api/docs" if settings.docs_enabled else None,
+        redoc_url=None,
+        openapi_url="/api/openapi.json" if settings.docs_enabled else None,
+    )
+    app.state.settings = settings
+
+    if settings.cors_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=settings.cors_origins,
+            allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+            allow_headers=["Authorization", "Content-Type", REQUEST_ID_HEADER],
+            expose_headers=[REQUEST_ID_HEADER],
+        )
+    # Added last so it is the outermost user middleware and wraps everything else.
+    app.add_middleware(RequestIdMiddleware)
+
+    register_exception_handlers(app)
+    app.include_router(health.router, prefix=API_PREFIX)
+    return app
