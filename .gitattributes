@@ -1,0 +1,3 @@
+# Never convert line endings in binary documents (would corrupt the sample policies).
+*.pdf  binary
+*.docx binary
