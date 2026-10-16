@@ -1,3 +1,4 @@
+import uuid
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -13,23 +14,26 @@ from sqlalchemy.orm import Session
 
 from mypal.config import Environment, Settings
 from mypal.main import create_app
+from mypal.retrieval.index import VectorIndex, create_index
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 # Used by tests that never touch the database (the engine connects lazily, so nothing dials it).
 UNUSED_DATABASE_URL = "postgresql+psycopg://unused@127.0.0.1:1/unused"
 
 
-class _TestDatabaseSettings(BaseSettings):
-    """Reads MYPAL_TEST_DATABASE_URL from the environment or backend/.env."""
+class _TestServiceSettings(BaseSettings):
+    """Where the test Postgres and Qdrant are: from the environment or backend/.env."""
 
     model_config = SettingsConfigDict(
         env_prefix="MYPAL_", env_file=BACKEND_DIR / ".env", extra="ignore"
     )
     test_database_url: SecretStr | None = None
+    qdrant_url: str = "http://127.0.0.1:6333"
+    qdrant_api_key: SecretStr | None = None
 
 
 def _test_database_url() -> str | None:
-    url = _TestDatabaseSettings().test_database_url
+    url = _TestServiceSettings().test_database_url
     return url.get_secret_value() if url else None
 
 
@@ -41,6 +45,8 @@ def settings() -> Settings:
         environment=Environment.TEST,
         log_json=True,
         database_url=_test_database_url() or UNUSED_DATABASE_URL,
+        qdrant_url=_TestServiceSettings().qdrant_url,
+        qdrant_api_key=_TestServiceSettings().qdrant_api_key,
     )
 
 
@@ -101,3 +107,19 @@ def db_session(db_engine: Engine) -> Iterator[Session]:
         session.close()
         transaction.rollback()
         connection.close()
+
+
+# --- Vector index fixture ---------------------------------------------------------------------
+
+
+@pytest.fixture
+def vector_index(settings: Settings) -> Iterator[VectorIndex]:
+    """A fresh, uniquely named Qdrant collection per test, deleted afterwards. The development
+    collection is never touched."""
+    index = create_index(settings, collection=f"test_{uuid.uuid4().hex[:12]}")
+    try:
+        index._client.get_collections()
+    except Exception:  # connection refused, timeout, wrong key...
+        pytest.skip("Qdrant is not reachable - start it with: docker compose up -d")
+    yield index
+    index._client.delete_collection(index.collection)
