@@ -63,3 +63,6 @@ def configure_logging(settings: Settings) -> None:
         uvicorn_logger.propagate = True
     # RequestIdMiddleware already logs every request with its ID and timing.
     logging.getLogger("uvicorn.access").disabled = True
+    # HTTP client libraries (used by the Qdrant and LLM clients) log every call at INFO.
+    for name in ("httpx", "httpcore", "openai"):
+        logging.getLogger(name).setLevel(max(logging.WARNING, root.level))
