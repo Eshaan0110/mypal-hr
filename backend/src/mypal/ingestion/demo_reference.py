@@ -8,7 +8,11 @@ from sqlalchemy.orm import Session
 
 from mypal.db.models import Company, EmployeeCategory, Location
 
-DEMO_COMPANIES = {"DEMO-HEALTH": "Demo Health Services (fictional)"}
+DEMO_COMPANIES = {
+    "DEMO-HEALTH": "Demo Health Services (fictional)",
+    # A second fictional company, used to prove one company cannot see another's policies.
+    "DEMO-OTHER": "Other Demo Company (fictional)",
+}
 DEMO_LOCATIONS = {
     "DEMO-NORTH": "North Campus (fictional)",
     "DEMO-SOUTH": "South Campus (fictional)",
