@@ -8,8 +8,9 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 |---|---|---|
 | 0 | Repository inspection and architecture | Done |
 | 1 | Backend foundation (FastAPI, settings, health, errors, logging, tests) | Done |
-| 2 | Database foundation (PostgreSQL, schema, migrations) | Awaiting review |
-| 3–9 | Ingestion, RAG, retrieval, chat UI, HR admin, security/evaluation, packaging | Not started |
+| 2 | Database foundation (PostgreSQL, schema, migrations) | Done |
+| 3 | Document ingestion (PDF/DOCX parsing, quality checks, chunking, drafts) | Awaiting review |
+| 4–9 | RAG, retrieval, chat UI, HR admin, security/evaluation, packaging | Not started |
 
 ## Repository layout
 
@@ -17,6 +18,7 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 |---|---|
 | `backend/` | Python 3.11 FastAPI service, managed with uv — see [backend/README.md](backend/README.md) |
 | `docker-compose.yml`, `docker/` | Local PostgreSQL 16 (development and test databases) |
+| `sample_data/` | **Fictional** sample policies for development — not real policies |
 
 ## Quick start
 
