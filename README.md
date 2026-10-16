@@ -7,22 +7,27 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 | Phase | Scope | State |
 |---|---|---|
 | 0 | Repository inspection and architecture | Done |
-| 1 | Backend foundation (FastAPI, settings, health, errors, logging, tests) | Awaiting review |
-| 2–9 | Database, ingestion, RAG, retrieval, chat UI, HR admin, security/evaluation, packaging | Not started |
+| 1 | Backend foundation (FastAPI, settings, health, errors, logging, tests) | Done |
+| 2 | Database foundation (PostgreSQL, schema, migrations) | Awaiting review |
+| 3–9 | Ingestion, RAG, retrieval, chat UI, HR admin, security/evaluation, packaging | Not started |
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
 | `backend/` | Python 3.11 FastAPI service, managed with uv — see [backend/README.md](backend/README.md) |
+| `docker-compose.yml`, `docker/` | Local PostgreSQL 16 (development and test databases) |
 
 ## Quick start
 
-Prerequisite: [uv](https://docs.astral.sh/uv/getting-started/installation/). uv downloads Python 3.11 itself if needed.
+Prerequisites: [uv](https://docs.astral.sh/uv/getting-started/installation/) (it downloads Python 3.11 itself if needed) and Docker Desktop.
 
 ```bash
+docker compose up -d
 cd backend
 uv sync
+cp .env.example .env
+uv run alembic upgrade head
 uv run pytest
 uv run uvicorn mypal.main:create_app --factory --reload
 ```
