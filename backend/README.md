@@ -92,7 +92,9 @@ uv run mypal-ask "How many sick leave days do I get?" --as dev-employee-north
 curl -X POST http://127.0.0.1:8000/api/chat -H "Content-Type: application/json" -H "X-Dev-User: dev-employee-north" -d "{\"message\": \"How many sick leave days do I get?\"}"
 ```
 
-`uv run mypal-policy reindex` rebuilds the search index from Postgres (e.g. after changing the embedding model).
+`uv run mypal-policy reindex` rebuilds the search index from Postgres; add `--recreate` after changing the index layout or embedding model (e.g. when upgrading from Phase 4).
+
+Retrieval quality is measured with `uv run mypal-eval-retrieval` — see [eval/README.md](eval/README.md) for the question set, results and the decisions they led to.
 
 **Development login stand-in.** Until SSO is available, `X-Dev-User` selects one of a few predefined *fictional* users (`dev-employee-north`, `dev-probationer-south`, `dev-trainee`, `dev-other-company`, `dev-hr-admin`). The caller can only pick a user, never set a company, location or category. Settings refuse to start in staging or production with this mode.
 
@@ -100,8 +102,8 @@ How a question is answered (`answering/service.py`):
 
 1. **Guard** — personal-record requests (payslips, balances) and sensitive topics (harassment, grievances) are referred to HR immediately; sensitive topics get the confidential route.
 2. **Scope gate** — Postgres lists the versions this employee may see: active, already in effect, and matching their company / location / category. Unknown attributes only match "all" scopes.
-3. **Retrieve** — the question is embedded and Qdrant is searched *only inside that list*.
-4. **Confidence gate** — if no passage scores at least `MYPAL_RETRIEVAL_MIN_SCORE` (0.65), refer to HR without calling the model.
+3. **Retrieve (hybrid)** — Qdrant runs a meaning (dense) search and a BM25 keyword search, both *only inside that list*; the two rankings are merged with Reciprocal Rank Fusion, and a cross-encoder reranker re-orders the top 10.
+4. **Confidence gate** — if no allowed passage reaches cosine similarity `MYPAL_RETRIEVAL_MIN_SCORE` (0.55), refer to HR without calling the model.
 5. **Generate** — the model receives passages labelled P1..Pn as data, with strict rules, and returns JSON (answer, citations, clarification question). The outcome is derived in code, not chosen by the model.
 6. **Validate** — citations must refer to supplied passages, and every number in the answer must appear in the cited passages. Any failure → referral.
 7. **Cite** — citations (policy, version, section, page, effective date, link) are built from Postgres, never from model text.
@@ -120,7 +122,9 @@ Every question writes one `query_metrics` row (outcome, timings, tokens, top sco
 | `src/mypal/db/` | Engine/session handling, declarative base, ORM models |
 | `src/mypal/ingestion/` | File checks, PDF/DOCX parsers, quality report, chunker, draft storage, CLI |
 | `src/mypal/policies/` | Lifecycle transitions (submit, approve, publish/supersede) with audit; `mypal-policy` CLI |
-| `src/mypal/retrieval/` | Embeddings (fastembed), Qdrant index, scope gate |
+| `src/mypal/retrieval/` | Dense and BM25 embeddings, Qdrant index, RRF fusion, reranker, `Retriever`, scope gate |
+| `src/mypal/evaluation/` | Retrieval evaluation (`mypal-eval-retrieval`) |
+| `eval/` | Evaluation question set and results |
 | `src/mypal/answering/` | Guard, prompts, language-model client, validator, answer pipeline; `mypal-ask` CLI |
 | `src/mypal/auth/` | `Principal` and the development login stand-in |
 | `src/mypal/observability/` | Request IDs and structured logging |

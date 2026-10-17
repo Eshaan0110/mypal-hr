@@ -20,8 +20,7 @@ from mypal.db.session import create_db_engine, create_session_factory
 from mypal.errors import register_exception_handlers
 from mypal.observability.logging import configure_logging
 from mypal.observability.request_id import REQUEST_ID_HEADER, RequestIdMiddleware
-from mypal.retrieval.embeddings import create_embedder
-from mypal.retrieval.index import create_index
+from mypal.retrieval.retriever import create_retriever
 
 API_PREFIX = "/api"
 
@@ -50,8 +49,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # None of these connect or load a model yet; that happens on first use.
     app.state.answer_dependencies = AnswerDependencies(
         settings=settings,
-        embedder=create_embedder(settings),
-        index=create_index(settings),
+        retriever=create_retriever(settings),
         llm=create_llm(settings),
     )
 

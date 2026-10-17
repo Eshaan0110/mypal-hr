@@ -10,8 +10,9 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 | 1 | Backend foundation (FastAPI, settings, health, errors, logging, tests) | Done |
 | 2 | Database foundation (PostgreSQL, schema, migrations) | Done |
 | 3 | Document ingestion (PDF/DOCX parsing, quality checks, chunking, drafts) | Done |
-| 4 | Basic RAG (embeddings, Qdrant, scope gate, grounded cited answers, HR referral) | Awaiting review |
-| 5–9 | Hybrid retrieval, chat UI, HR admin, security/evaluation, packaging | Not started |
+| 4 | Basic RAG (embeddings, Qdrant, scope gate, grounded cited answers, HR referral) | Done |
+| 5 | Retrieval improvements (BM25 + dense hybrid, RRF, reranker, measured evaluation) | Awaiting review |
+| 6–9 | Chat UI, HR admin, security/evaluation, packaging | Not started |
 
 ## Repository layout
 

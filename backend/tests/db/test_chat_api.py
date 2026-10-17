@@ -17,7 +17,7 @@ from mypal.ingestion.demo_reference import seed_demo_reference_data
 from mypal.main import create_app
 from mypal.retrieval.embeddings import passage_text
 from mypal.retrieval.index import VectorIndex
-from tests.fakes import HashEmbedder, ScriptedLLM, UnavailableLLM, answer
+from tests.fakes import ScriptedLLM, UnavailableLLM, answer, fake_retriever
 from tests.rag_helpers import TODAY, add_version, published
 
 SICK = ("3.2 Sick leave", "Employees are entitled to 10 days of sick leave per calendar year.")
@@ -46,8 +46,7 @@ def api(
     app = create_app(settings)
     deps = AnswerDependencies(
         settings=settings.model_copy(update={"retrieval_min_score": 0.3}),
-        embedder=HashEmbedder(),
-        index=vector_index,
+        retriever=fake_retriever(vector_index),
         llm=llm,
     )
     app.dependency_overrides[get_answer_dependencies] = lambda: deps
@@ -137,8 +136,7 @@ def test_model_unavailable_becomes_a_referral(
 ) -> None:
     api.app.dependency_overrides[get_answer_dependencies] = lambda: AnswerDependencies(
         settings.model_copy(update={"retrieval_min_score": 0.3}),
-        HashEmbedder(),
-        vector_index,
+        fake_retriever(vector_index),
         UnavailableLLM(),
     )
 
@@ -222,10 +220,11 @@ def test_draft_content_is_never_used_even_if_it_is_in_the_index(
         status="draft",
     )
     world.refresh(draft)
-    vectors = HashEmbedder().embed_passages(
-        [passage_text(c.heading_path, c.text) for c in draft.chunks]
+    fake_retriever(vector_index).index_version(
+        draft.id,
+        [c.id for c in draft.chunks],
+        [passage_text(c.heading_path, c.text) for c in draft.chunks],
     )
-    vector_index.upsert_version(draft.id, [c.id for c in draft.chunks], vectors)
     llm.replies = [answer("10 days.", "P1")]
 
     body = ask(api, "How many days of sick leave bonus do I get?").json()

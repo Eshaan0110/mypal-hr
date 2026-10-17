@@ -29,8 +29,8 @@ from mypal.answering.validator import strip_inline_labels, validate_answer
 from mypal.auth.principal import Principal
 from mypal.config import Settings
 from mypal.db.models import AnswerOutcome, Chunk, HrContact, Policy, PolicyVersion, QueryMetric
-from mypal.retrieval.embeddings import Embedder, passage_text
-from mypal.retrieval.index import SearchHit, VectorIndex
+from mypal.retrieval.embeddings import passage_text
+from mypal.retrieval.retriever import RankedChunk, Retriever
 from mypal.retrieval.scope import allowed_version_ids
 from mypal.schemas.chat import ChatResponse, Citation, ReferralReason
 from mypal.schemas.chat import HrContact as HrContactOut
@@ -55,8 +55,7 @@ GENERIC_CONTACT = "your designated HR contact"
 @dataclass
 class AnswerDependencies:
     settings: Settings
-    embedder: Embedder
-    index: VectorIndex
+    retriever: Retriever
     llm: LanguageModel
 
 
@@ -104,20 +103,24 @@ def _answer(
     if not allowed:
         return (_referral(session, principal, "no_applicable_policy"), *no_model, None)
 
-    # 3. Retrieve, only inside the allowed versions.
+    # 3. Retrieve (hybrid: meaning + keywords, fused), only inside the allowed versions.
     retrieval_started = time.perf_counter()
-    hits = deps.index.search(
-        deps.embedder.embed_query(question), allowed, deps.settings.retrieval_top_k
+    result = deps.retriever.retrieve(
+        question,
+        allowed,
+        deps.settings.retrieval_top_k,
+        load_texts=lambda ids: _passage_texts(session, ids, allowed),
     )
     timings.retrieval_ms = _elapsed_ms(retrieval_started)
-    top_score = hits[0].score if hits else None
+    top_score = result.best_dense_score
 
-    # 4. Confidence gate: weak evidence -> referral, without spending a model call.
-    relevant = [h for h in hits if h.score >= deps.settings.retrieval_min_score]
-    if not relevant:
+    # 4. Confidence gate: if nothing the employee may see is close in meaning, refer to HR
+    #    without spending a model call. Uses cosine similarity, which (unlike BM25 or RRF
+    #    scores) is comparable from one question to the next.
+    if top_score is None or top_score < deps.settings.retrieval_min_score:
         return (_referral(session, principal, "insufficient_evidence"), *no_model, top_score)
 
-    chunks = _load_chunks(session, relevant, allowed)
+    chunks = _load_chunks(session, result.chunks, allowed)
     if not chunks:  # index and database disagree; never answer from unverified text
         logger.warning("retrieved chunks not found among allowed versions")
         return (_referral(session, principal, "insufficient_evidence"), *no_model, top_score)
@@ -179,8 +182,20 @@ def _answer(
     return response, reply.model, tokens, top_score
 
 
+def _passage_texts(
+    session: Session, chunk_ids: list[uuid.UUID], allowed: list[uuid.UUID]
+) -> dict[uuid.UUID, str]:
+    """Texts for the reranker - loaded from Postgres, and again only from allowed versions."""
+    rows = session.execute(
+        select(Chunk.id, Chunk.heading_path, Chunk.text).where(
+            Chunk.id.in_(chunk_ids), Chunk.version_id.in_(allowed)
+        )
+    ).all()
+    return {row.id: passage_text(row.heading_path, row.text) for row in rows}
+
+
 def _load_chunks(
-    session: Session, hits: list[SearchHit], allowed: list[uuid.UUID]
+    session: Session, hits: list[RankedChunk], allowed: list[uuid.UUID]
 ) -> list[tuple[Chunk, PolicyVersion, Policy]]:
     """Re-check every hit against Postgres: the chunk must belong to an allowed version.
     Defence in depth - even a stale or tampered index entry cannot leak other content."""

@@ -4,7 +4,7 @@ Phase 7). The same lifecycle rules apply as in the portal: four-eyes approval, a
     uv run mypal-policy submit  VERSION_ID --actor hr-uploader@example.test
     uv run mypal-policy approve VERSION_ID --actor hr-reviewer@example.test
     uv run mypal-policy publish VERSION_ID --actor hr-reviewer@example.test
-    uv run mypal-policy reindex                   rebuild the search index from Postgres
+    uv run mypal-policy reindex [--recreate]      rebuild the search index from Postgres
 
 `--actor` is self-declared in this development tool; the portal takes it from the login.
 """
@@ -21,8 +21,8 @@ from mypal.db.models import Chunk, PolicyVersion, PolicyVersionStatus
 from mypal.db.session import create_db_engine, create_session_factory
 from mypal.errors import AppError
 from mypal.policies import lifecycle
-from mypal.retrieval.embeddings import create_embedder, passage_text
-from mypal.retrieval.index import create_index
+from mypal.retrieval.embeddings import passage_text
+from mypal.retrieval.retriever import create_retriever
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -38,6 +38,11 @@ def main(argv: list[str] | None = None) -> int:
         command.add_argument("--actor", required=True, help="who performs the action")
         command.set_defaults(command=name)
     reindex = commands.add_parser("reindex", help="rebuild the search index for active versions")
+    reindex.add_argument(
+        "--recreate",
+        action="store_true",
+        help="drop and recreate the collection first (needed after a layout or model change)",
+    )
     reindex.set_defaults(command="reindex")
     args = parser.parse_args(argv)
 
@@ -46,7 +51,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         with session:
             if args.command == "reindex":
-                return _reindex(session, settings)
+                return _reindex(session, settings, recreate=args.recreate)
             if args.command == "submit":
                 version = lifecycle.submit_for_review(session, args.version_id, args.actor)
             elif args.command == "approve":
@@ -56,8 +61,7 @@ def main(argv: list[str] | None = None) -> int:
                     session,
                     args.version_id,
                     args.actor,
-                    create_embedder(settings),
-                    create_index(settings),
+                    create_retriever(settings),
                     date.today(),
                 )
             session.commit()
@@ -68,11 +72,12 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
 
-def _reindex(session, settings: Settings) -> int:  # noqa: ANN001
+def _reindex(session, settings: Settings, recreate: bool) -> int:  # noqa: ANN001
     """Rebuild every active version's points from Postgres (e.g. after changing the embedding
     model). Postgres is the source of truth, so this is always safe."""
-    embedder, index = create_embedder(settings), create_index(settings)
-    index.ensure_collection(embedder.dimension)
+    retriever = create_retriever(settings)
+    if recreate:
+        retriever.index.recreate(retriever.dense.dimension)
     versions = session.scalars(
         select(PolicyVersion).where(PolicyVersion.status == PolicyVersionStatus.ACTIVE)
     ).all()
@@ -80,10 +85,15 @@ def _reindex(session, settings: Settings) -> int:  # noqa: ANN001
         chunks = session.scalars(
             select(Chunk).where(Chunk.version_id == version.id).order_by(Chunk.ordinal)
         ).all()
-        vectors = embedder.embed_passages([passage_text(c.heading_path, c.text) for c in chunks])
-        index.upsert_version(version.id, [c.id for c in chunks], vectors)
+        retriever.index_version(
+            version.id,
+            [c.id for c in chunks],
+            [passage_text(c.heading_path, c.text) for c in chunks],
+        )
         print(f"indexed {version.id} ({len(chunks)} chunks)")
-    print(f"{len(versions)} active version(s) indexed; {index.count()} points in the index.")
+    print(
+        f"{len(versions)} active version(s) indexed; {retriever.index.count()} points in the index."
+    )
     return 0
 
 

@@ -20,8 +20,8 @@ from sqlalchemy.orm import Session
 
 from mypal.db.models import AuditEvent, Chunk, PolicyVersion, PolicyVersionStatus
 from mypal.errors import AppError
-from mypal.retrieval.embeddings import Embedder, passage_text
-from mypal.retrieval.index import VectorIndex
+from mypal.retrieval.embeddings import passage_text
+from mypal.retrieval.retriever import Retriever
 
 Status = PolicyVersionStatus
 
@@ -62,8 +62,7 @@ def publish(
     session: Session,
     version_id: uuid.UUID,
     actor: str,
-    embedder: Embedder,
-    index: VectorIndex,
+    retriever: Retriever,
     today: date,
     request_id: str | None = None,
 ) -> PolicyVersion:
@@ -81,9 +80,9 @@ def publish(
     )
     if not chunks:
         raise LifecycleError("The version has no chunks to publish.")
-    vectors = embedder.embed_passages([passage_text(c.heading_path, c.text) for c in chunks])
-    index.ensure_collection(embedder.dimension)
-    index.upsert_version(version.id, [c.id for c in chunks], vectors)
+    retriever.index_version(
+        version.id, [c.id for c in chunks], [passage_text(c.heading_path, c.text) for c in chunks]
+    )
 
     # Step 2: switch which version is active.
     previous = session.scalar(

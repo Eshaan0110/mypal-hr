@@ -1,0 +1,4479 @@
+{
+  "created_at": "20261017-080737",
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "sparse_model": "Qdrant/bm25",
+  "rrf_k": 60,
+  "confidence_threshold": 0.55,
+  "configurations": [
+    {
+      "name": "dense",
+      "hit_at_1": 0.7878787878787878,
+      "hit_at_3": 0.9090909090909091,
+      "hit_at_5": 0.9393939393939394,
+      "mrr": 0.8579124579124578,
+      "by_type": {
+        "exact": {
+          "n": 7,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "keyword": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "misspelling": {
+          "n": 5,
+          "hit@1": 0.6,
+          "hit@5": 0.8
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit@1": 0.6153846153846154,
+          "hit@5": 0.9230769230769231
+        },
+        "policy_name": {
+          "n": 2,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        }
+      },
+      "unanswerable_referred": "1/6",
+      "answerable_wrongly_referred": "0/33",
+      "avg_ms": 37.3,
+      "questions": [
+        {
+          "id": "exact-01",
+          "type": "exact",
+          "question": "How many days of sick leave per calendar year?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.9057721,
+          "top_score": 0.9057721
+        },
+        {
+          "id": "exact-02",
+          "type": "exact",
+          "question": "Can casual leave be carried forward to the next year?",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#2",
+            "leave-policy#4",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.803606,
+          "top_score": 0.803606
+        },
+        {
+          "id": "exact-03",
+          "type": "exact",
+          "question": "What is the maximum earned leave that can be carried forward?",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "salary-advance-policy#2",
+            "leave-policy#3.1",
+            "salary-advance-policy#3",
+            "leave-policy#6",
+            "salary-advance-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#5",
+            "leave-policy#4",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.79905576,
+          "top_score": 0.79905576
+        },
+        {
+          "id": "exact-04",
+          "type": "exact",
+          "question": "Within how many calendar days must travel claims be submitted?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8822768,
+          "top_score": 0.8822768
+        },
+        {
+          "id": "exact-05",
+          "type": "exact",
+          "question": "What is the maximum salary advance amount?",
+          "expected": [
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.85367984,
+          "top_score": 0.85367984
+        },
+        {
+          "id": "exact-06",
+          "type": "exact",
+          "question": "How many instalments are allowed to repay a salary advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8606808,
+          "top_score": 0.8606808
+        },
+        {
+          "id": "exact-07",
+          "type": "exact",
+          "question": "Can earned leave be taken during the notice period?",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "leave-policy#6",
+            "salary-advance-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8735467,
+          "top_score": 0.8735467
+        },
+        {
+          "id": "keyword-01",
+          "type": "keyword",
+          "question": "form SA-1",
+          "expected": [
+            "salary-advance-policy#4"
+          ],
+          "retrieved": [
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7708612,
+          "top_score": 0.7708612
+        },
+        {
+          "id": "keyword-02",
+          "type": "keyword",
+          "question": "Grade C other city per day",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#2",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7895331,
+          "top_score": 0.7895331
+        },
+        {
+          "id": "keyword-03",
+          "type": "keyword",
+          "question": "medical certificate",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#2",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5828632,
+          "top_score": 0.5828632
+        },
+        {
+          "id": "keyword-04",
+          "type": "keyword",
+          "question": "boarding passes hotel invoices",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7787103,
+          "top_score": 0.7787103
+        },
+        {
+          "id": "keyword-05",
+          "type": "keyword",
+          "question": "HR Business Partner written approval",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "salary-advance-policy#4",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#-",
+            "leave-policy#4",
+            "leave-policy#7",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.75545704,
+          "top_score": 0.75545704
+        },
+        {
+          "id": "keyword-06",
+          "type": "keyword",
+          "question": "department head international travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#1",
+            "leave-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#-",
+            "salary-advance-policy#4"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7106172,
+          "top_score": 0.7106172
+        },
+        {
+          "id": "paraphrase-01",
+          "type": "paraphrase",
+          "question": "How much time off do I get when I'm unwell?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-",
+            "leave-policy#5",
+            "travel-reimbursement-policy#-",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7311607,
+          "top_score": 0.7311607
+        },
+        {
+          "id": "paraphrase-02",
+          "type": "paraphrase",
+          "question": "Can people still in their trial period take annual leave?",
+          "expected": [
+            "leave-policy#6",
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#1",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.72865015,
+          "top_score": 0.72865015
+        },
+        {
+          "id": "paraphrase-03",
+          "type": "paraphrase",
+          "question": "What paperwork do I need to get my business trip costs paid back?",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7678092,
+          "top_score": 0.7678092
+        },
+        {
+          "id": "paraphrase-04",
+          "type": "paraphrase",
+          "question": "How long after coming back from a work trip can I file my expenses?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78913474,
+          "top_score": 0.78913474
+        },
+        {
+          "id": "paraphrase-05",
+          "type": "paraphrase",
+          "question": "Who signs off on my vacation request?",
+          "expected": [
+            "leave-policy#4"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#5",
+            "salary-advance-policy#4",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "leave-policy#4",
+            "leave-policy#3.1"
+          ],
+          "first_correct_rank": 9,
+          "best_dense_score": 0.6580786,
+          "top_score": 0.6580786
+        },
+        {
+          "id": "paraphrase-06",
+          "type": "paraphrase",
+          "question": "How soon will I get the money for my expense claim?",
+          "expected": [
+            "travel-reimbursement-policy#4.3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.7546757,
+          "top_score": 0.7546757
+        },
+        {
+          "id": "paraphrase-07",
+          "type": "paraphrase",
+          "question": "Can I borrow money from the company against my pay?",
+          "expected": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#5",
+            "salary-advance-policy#1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.61782295,
+          "top_score": 0.61782295
+        },
+        {
+          "id": "paraphrase-08",
+          "type": "paraphrase",
+          "question": "Is interest charged when I pay back the advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78246427,
+          "top_score": 0.78246427
+        },
+        {
+          "id": "paraphrase-09",
+          "type": "paraphrase",
+          "question": "Can I get a bigger advance in an emergency?",
+          "expected": [
+            "salary-advance-policy#5"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#-",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#1"
+          ],
+          "first_correct_rank": 5,
+          "best_dense_score": 0.6738674,
+          "top_score": 0.6738674
+        },
+        {
+          "id": "paraphrase-10",
+          "type": "paraphrase",
+          "question": "Do interns get any days off?",
+          "expected": [
+            "leave-policy#6"
+          ],
+          "retrieved": [
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#5",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.6407347,
+          "top_score": 0.6407347
+        },
+        {
+          "id": "paraphrase-11",
+          "type": "paraphrase",
+          "question": "Do I need a doctor's note if I'm off sick for a few days?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#5",
+            "leave-policy#4",
+            "leave-policy#6",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.69607186,
+          "top_score": 0.69607186
+        },
+        {
+          "id": "paraphrase-12",
+          "type": "paraphrase",
+          "question": "Whose permission do I need before flying abroad for work?",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#1",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#-",
+            "leave-policy#5",
+            "salary-advance-policy#4",
+            "leave-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73765033,
+          "top_score": 0.73765033
+        },
+        {
+          "id": "paraphrase-13",
+          "type": "paraphrase",
+          "question": "What is the daily allowance for a senior employee visiting a big city?",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#1",
+            "leave-policy#3.1",
+            "salary-advance-policy#2",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7912633,
+          "top_score": 0.7912633
+        },
+        {
+          "id": "misspelling-01",
+          "type": "misspelling",
+          "question": "how many sik leaves do i get",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#-",
+            "leave-policy#2"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.56096625,
+          "top_score": 0.56096625
+        },
+        {
+          "id": "misspelling-02",
+          "type": "misspelling",
+          "question": "trvel claim documnets needed",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.6858842,
+          "top_score": 0.6858842
+        },
+        {
+          "id": "misspelling-03",
+          "type": "misspelling",
+          "question": "salery advanse instalments",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-",
+            "salary-advance-policy#5",
+            "salary-advance-policy#3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#1"
+          ],
+          "first_correct_rank": 6,
+          "best_dense_score": 0.5899854,
+          "top_score": 0.5899854
+        },
+        {
+          "id": "misspelling-04",
+          "type": "misspelling",
+          "question": "earnd leave carry foward",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#5",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73665154,
+          "top_score": 0.73665154
+        },
+        {
+          "id": "misspelling-05",
+          "type": "misspelling",
+          "question": "casul leave consecutive days limit",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.67783886,
+          "top_score": 0.67783886
+        },
+        {
+          "id": "policy-name-01",
+          "type": "policy_name",
+          "question": "Salary Advance Policy eligibility",
+          "expected": [
+            "salary-advance-policy#1"
+          ],
+          "retrieved": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#2",
+            "leave-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7907251,
+          "top_score": 0.7907251
+        },
+        {
+          "id": "policy-name-02",
+          "type": "policy_name",
+          "question": "Travel and Reimbursement Policy approval before travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#-",
+            "leave-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.80406445,
+          "top_score": 0.80406445
+        },
+        {
+          "id": "unanswerable-01",
+          "type": "unanswerable",
+          "question": "What is the maternity leave policy?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#1",
+            "leave-policy#-",
+            "leave-policy#2",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#6",
+            "salary-advance-policy#-",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.72725856,
+          "top_score": 0.72725856
+        },
+        {
+          "id": "unanswerable-02",
+          "type": "unanswerable",
+          "question": "What is the office dress code?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#2",
+            "leave-policy#6",
+            "leave-policy#-",
+            "salary-advance-policy#4",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.575874,
+          "top_score": 0.575874
+        },
+        {
+          "id": "unanswerable-03",
+          "type": "unanswerable",
+          "question": "Can I work from home on Fridays?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "salary-advance-policy#1",
+            "leave-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.59602046,
+          "top_score": 0.59602046
+        },
+        {
+          "id": "unanswerable-04",
+          "type": "unanswerable",
+          "question": "Does the company reimburse gym membership?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#2",
+            "salary-advance-policy#1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.6153307,
+          "top_score": 0.6153307
+        },
+        {
+          "id": "unanswerable-05",
+          "type": "unanswerable",
+          "question": "How is overtime pay calculated?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#2",
+            "leave-policy#4",
+            "salary-advance-policy#3",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.61441374,
+          "top_score": 0.61441374
+        },
+        {
+          "id": "unanswerable-06",
+          "type": "unanswerable",
+          "question": "What is the capital of France?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#-",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#4",
+            "leave-policy#3.2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.43421537,
+          "top_score": 0.43421537
+        }
+      ]
+    },
+    {
+      "name": "bm25",
+      "hit_at_1": 0.6060606060606061,
+      "hit_at_3": 0.6666666666666666,
+      "hit_at_5": 0.7575757575757576,
+      "mrr": 0.6583694083694083,
+      "by_type": {
+        "exact": {
+          "n": 7,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "keyword": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "misspelling": {
+          "n": 5,
+          "hit@1": 0.4,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit@1": 0.3076923076923077,
+          "hit@5": 0.38461538461538464
+        },
+        "policy_name": {
+          "n": 2,
+          "hit@1": 0.5,
+          "hit@5": 1.0
+        }
+      },
+      "unanswerable_referred": "6/6",
+      "answerable_wrongly_referred": "33/33",
+      "avg_ms": 12.3,
+      "questions": [
+        {
+          "id": "exact-01",
+          "type": "exact",
+          "question": "How many days of sick leave per calendar year?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#1",
+            "leave-policy#5",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 17.044569
+        },
+        {
+          "id": "exact-02",
+          "type": "exact",
+          "question": "Can casual leave be carried forward to the next year?",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#5",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 21.941353
+        },
+        {
+          "id": "exact-03",
+          "type": "exact",
+          "question": "What is the maximum earned leave that can be carried forward?",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#5",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 16.902637
+        },
+        {
+          "id": "exact-04",
+          "type": "exact",
+          "question": "Within how many calendar days must travel claims be submitted?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#7",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 22.150156
+        },
+        {
+          "id": "exact-05",
+          "type": "exact",
+          "question": "What is the maximum salary advance amount?",
+          "expected": [
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "salary-advance-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 13.3905735
+        },
+        {
+          "id": "exact-06",
+          "type": "exact",
+          "question": "How many instalments are allowed to repay a salary advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 14.636333
+        },
+        {
+          "id": "exact-07",
+          "type": "exact",
+          "question": "Can earned leave be taken during the notice period?",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#4",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 18.961962
+        },
+        {
+          "id": "keyword-01",
+          "type": "keyword",
+          "question": "form SA-1",
+          "expected": [
+            "salary-advance-policy#4"
+          ],
+          "retrieved": [
+            "salary-advance-policy#4",
+            "leave-policy#1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#-",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#5",
+            "leave-policy#3.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 10.882083
+        },
+        {
+          "id": "keyword-02",
+          "type": "keyword",
+          "question": "Grade C other city per day",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 18.867308
+        },
+        {
+          "id": "keyword-03",
+          "type": "keyword",
+          "question": "medical certificate",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 9.302142
+        },
+        {
+          "id": "keyword-04",
+          "type": "keyword",
+          "question": "boarding passes hotel invoices",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 18.55716
+        },
+        {
+          "id": "keyword-05",
+          "type": "keyword",
+          "question": "HR Business Partner written approval",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "leave-policy#4",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#7",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 17.281528
+        },
+        {
+          "id": "keyword-06",
+          "type": "keyword",
+          "question": "department head international travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#4",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 14.789518
+        },
+        {
+          "id": "paraphrase-01",
+          "type": "paraphrase",
+          "question": "How much time off do I get when I'm unwell?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.949616
+        },
+        {
+          "id": "paraphrase-02",
+          "type": "paraphrase",
+          "question": "Can people still in their trial period take annual leave?",
+          "expected": [
+            "leave-policy#6",
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#6",
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 7.071432
+        },
+        {
+          "id": "paraphrase-03",
+          "type": "paraphrase",
+          "question": "What paperwork do I need to get my business trip costs paid back?",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "salary-advance-policy#3"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 4.747522
+        },
+        {
+          "id": "paraphrase-04",
+          "type": "paraphrase",
+          "question": "How long after coming back from a work trip can I file my expenses?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.1",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 4.797263
+        },
+        {
+          "id": "paraphrase-05",
+          "type": "paraphrase",
+          "question": "Who signs off on my vacation request?",
+          "expected": [
+            "leave-policy#4"
+          ],
+          "retrieved": [
+            "salary-advance-policy#4",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.4036403
+        },
+        {
+          "id": "paraphrase-06",
+          "type": "paraphrase",
+          "question": "How soon will I get the money for my expense claim?",
+          "expected": [
+            "travel-reimbursement-policy#4.3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": null,
+          "top_score": 7.793774
+        },
+        {
+          "id": "paraphrase-07",
+          "type": "paraphrase",
+          "question": "Can I borrow money from the company against my pay?",
+          "expected": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": null
+        },
+        {
+          "id": "paraphrase-08",
+          "type": "paraphrase",
+          "question": "Is interest charged when I pay back the advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 12.505037
+        },
+        {
+          "id": "paraphrase-09",
+          "type": "paraphrase",
+          "question": "Can I get a bigger advance in an emergency?",
+          "expected": [
+            "salary-advance-policy#5"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.0527344
+        },
+        {
+          "id": "paraphrase-10",
+          "type": "paraphrase",
+          "question": "Do interns get any days off?",
+          "expected": [
+            "leave-policy#6"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#6",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": 7,
+          "best_dense_score": null,
+          "top_score": 4.6988015
+        },
+        {
+          "id": "paraphrase-11",
+          "type": "paraphrase",
+          "question": "Do I need a doctor's note if I'm off sick for a few days?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 6.2551084
+        },
+        {
+          "id": "paraphrase-12",
+          "type": "paraphrase",
+          "question": "Whose permission do I need before flying abroad for work?",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.1",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.3129885
+        },
+        {
+          "id": "paraphrase-13",
+          "type": "paraphrase",
+          "question": "What is the daily allowance for a senior employee visiting a big city?",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#1",
+            "leave-policy#1",
+            "leave-policy#2",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#3.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 14.067312
+        },
+        {
+          "id": "misspelling-01",
+          "type": "misspelling",
+          "question": "how many sik leaves do i get",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#5",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": null,
+          "top_score": 2.4228215
+        },
+        {
+          "id": "misspelling-02",
+          "type": "misspelling",
+          "question": "trvel claim documnets needed",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": null,
+          "top_score": 3.5651011
+        },
+        {
+          "id": "misspelling-03",
+          "type": "misspelling",
+          "question": "salery advanse instalments",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 4.7352476
+        },
+        {
+          "id": "misspelling-04",
+          "type": "misspelling",
+          "question": "earnd leave carry foward",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#5",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 6.185661
+        },
+        {
+          "id": "misspelling-05",
+          "type": "misspelling",
+          "question": "casul leave consecutive days limit",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": null,
+          "top_score": 8.431968
+        },
+        {
+          "id": "policy-name-01",
+          "type": "policy_name",
+          "question": "Salary Advance Policy eligibility",
+          "expected": [
+            "salary-advance-policy#1"
+          ],
+          "retrieved": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": null,
+          "top_score": 11.048053
+        },
+        {
+          "id": "policy-name-02",
+          "type": "policy_name",
+          "question": "Travel and Reimbursement Policy approval before travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#4",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#5",
+            "salary-advance-policy#4"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": null,
+          "top_score": 7.7876673
+        },
+        {
+          "id": "unanswerable-01",
+          "type": "unanswerable",
+          "question": "What is the maternity leave policy?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#4",
+            "leave-policy#1",
+            "leave-policy#-",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.6373239
+        },
+        {
+          "id": "unanswerable-02",
+          "type": "unanswerable",
+          "question": "What is the office dress code?",
+          "expected": [],
+          "retrieved": [],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": null
+        },
+        {
+          "id": "unanswerable-03",
+          "type": "unanswerable",
+          "question": "Can I work from home on Fridays?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.1",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.3129885
+        },
+        {
+          "id": "unanswerable-04",
+          "type": "unanswerable",
+          "question": "Does the company reimburse gym membership?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": 3.4084442
+        },
+        {
+          "id": "unanswerable-05",
+          "type": "unanswerable",
+          "question": "How is overtime pay calculated?",
+          "expected": [],
+          "retrieved": [],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": null
+        },
+        {
+          "id": "unanswerable-06",
+          "type": "unanswerable",
+          "question": "What is the capital of France?",
+          "expected": [],
+          "retrieved": [],
+          "first_correct_rank": null,
+          "best_dense_score": null,
+          "top_score": null
+        }
+      ]
+    },
+    {
+      "name": "hybrid (RRF)",
+      "hit_at_1": 0.6060606060606061,
+      "hit_at_3": 0.9090909090909091,
+      "hit_at_5": 0.9393939393939394,
+      "mrr": 0.7464646464646465,
+      "by_type": {
+        "exact": {
+          "n": 7,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "keyword": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "misspelling": {
+          "n": 5,
+          "hit@1": 0.6,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit@1": 0.23076923076923078,
+          "hit@5": 0.8461538461538461
+        },
+        "policy_name": {
+          "n": 2,
+          "hit@1": 0.5,
+          "hit@5": 1.0
+        }
+      },
+      "unanswerable_referred": "1/6",
+      "answerable_wrongly_referred": "0/33",
+      "avg_ms": 35.6,
+      "questions": [
+        {
+          "id": "exact-01",
+          "type": "exact",
+          "question": "How many days of sick leave per calendar year?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "leave-policy#1",
+            "leave-policy#5"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.9057721,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "exact-02",
+          "type": "exact",
+          "question": "Can casual leave be carried forward to the next year?",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#5",
+            "leave-policy#1",
+            "leave-policy#-",
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.803606,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "exact-03",
+          "type": "exact",
+          "question": "What is the maximum earned leave that can be carried forward?",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "salary-advance-policy#2",
+            "leave-policy#6",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "leave-policy#5",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.79905576,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "exact-04",
+          "type": "exact",
+          "question": "Within how many calendar days must travel claims be submitted?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#3",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8822768,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "exact-05",
+          "type": "exact",
+          "question": "What is the maximum salary advance amount?",
+          "expected": [
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "leave-policy#3.3",
+            "salary-advance-policy#5",
+            "leave-policy#4",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.85367984,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "exact-06",
+          "type": "exact",
+          "question": "How many instalments are allowed to repay a salary advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#1",
+            "leave-policy#4",
+            "leave-policy#3.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8606808,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "exact-07",
+          "type": "exact",
+          "question": "Can earned leave be taken during the notice period?",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "leave-policy#6",
+            "salary-advance-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "salary-advance-policy#5",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8735467,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "keyword-01",
+          "type": "keyword",
+          "question": "form SA-1",
+          "expected": [
+            "salary-advance-policy#4"
+          ],
+          "retrieved": [
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7708612,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "keyword-02",
+          "type": "keyword",
+          "question": "Grade C other city per day",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7895331,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "keyword-03",
+          "type": "keyword",
+          "question": "medical certificate",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#2",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5828632,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "keyword-04",
+          "type": "keyword",
+          "question": "boarding passes hotel invoices",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7787103,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "keyword-05",
+          "type": "keyword",
+          "question": "HR Business Partner written approval",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#4",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#3",
+            "leave-policy#7",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.75545704,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "keyword-06",
+          "type": "keyword",
+          "question": "department head international travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#4",
+            "salary-advance-policy#5",
+            "leave-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7106172,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "paraphrase-01",
+          "type": "paraphrase",
+          "question": "How much time off do I get when I'm unwell?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#4",
+            "salary-advance-policy#2",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-",
+            "leave-policy#5",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.7311607,
+          "top_score": 0.031754032258064516
+        },
+        {
+          "id": "paraphrase-02",
+          "type": "paraphrase",
+          "question": "Can people still in their trial period take annual leave?",
+          "expected": [
+            "leave-policy#6",
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "salary-advance-policy#5",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#-",
+            "salary-advance-policy#1"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.72865015,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "paraphrase-03",
+          "type": "paraphrase",
+          "question": "What paperwork do I need to get my business trip costs paid back?",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.7678092,
+          "top_score": 0.030834914611005692
+        },
+        {
+          "id": "paraphrase-04",
+          "type": "paraphrase",
+          "question": "How long after coming back from a work trip can I file my expenses?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 5,
+          "best_dense_score": 0.78913474,
+          "top_score": 0.032266458495966696
+        },
+        {
+          "id": "paraphrase-05",
+          "type": "paraphrase",
+          "question": "Who signs off on my vacation request?",
+          "expected": [
+            "leave-policy#4"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#5",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": 10,
+          "best_dense_score": 0.6580786,
+          "top_score": 0.032266458495966696
+        },
+        {
+          "id": "paraphrase-06",
+          "type": "paraphrase",
+          "question": "How soon will I get the money for my expense claim?",
+          "expected": [
+            "travel-reimbursement-policy#4.3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.7546757,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "paraphrase-07",
+          "type": "paraphrase",
+          "question": "Can I borrow money from the company against my pay?",
+          "expected": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#5",
+            "salary-advance-policy#1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.61782295,
+          "top_score": 0.01639344262295082
+        },
+        {
+          "id": "paraphrase-08",
+          "type": "paraphrase",
+          "question": "Is interest charged when I pay back the advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78246427,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "paraphrase-09",
+          "type": "paraphrase",
+          "question": "Can I get a bigger advance in an emergency?",
+          "expected": [
+            "salary-advance-policy#5"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#5",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#4"
+          ],
+          "first_correct_rank": 6,
+          "best_dense_score": 0.6738674,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "paraphrase-10",
+          "type": "paraphrase",
+          "question": "Do interns get any days off?",
+          "expected": [
+            "leave-policy#6"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#5"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.6407347,
+          "top_score": 0.031754032258064516
+        },
+        {
+          "id": "paraphrase-11",
+          "type": "paraphrase",
+          "question": "Do I need a doctor's note if I'm off sick for a few days?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#6",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#5",
+            "salary-advance-policy#5"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.69607186,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "paraphrase-12",
+          "type": "paraphrase",
+          "question": "Whose permission do I need before flying abroad for work?",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#1",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#-",
+            "leave-policy#5"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.73765033,
+          "top_score": 0.029827662395050816
+        },
+        {
+          "id": "paraphrase-13",
+          "type": "paraphrase",
+          "question": "What is the daily allowance for a senior employee visiting a big city?",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7912633,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "misspelling-01",
+          "type": "misspelling",
+          "question": "how many sik leaves do i get",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#1",
+            "leave-policy#-",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.56096625,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "misspelling-02",
+          "type": "misspelling",
+          "question": "trvel claim documnets needed",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.6858842,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "misspelling-03",
+          "type": "misspelling",
+          "question": "salery advanse instalments",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-",
+            "salary-advance-policy#5",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5899854,
+          "top_score": 0.031544957774465976
+        },
+        {
+          "id": "misspelling-04",
+          "type": "misspelling",
+          "question": "earnd leave carry foward",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#5",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#-",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73665154,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "misspelling-05",
+          "type": "misspelling",
+          "question": "casul leave consecutive days limit",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.67783886,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "policy-name-01",
+          "type": "policy_name",
+          "question": "Salary Advance Policy eligibility",
+          "expected": [
+            "salary-advance-policy#1"
+          ],
+          "retrieved": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "leave-policy#4",
+            "leave-policy#1",
+            "leave-policy#2",
+            "salary-advance-policy#5"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7907251,
+          "top_score": 0.03278688524590164
+        },
+        {
+          "id": "policy-name-02",
+          "type": "policy_name",
+          "question": "Travel and Reimbursement Policy approval before travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "leave-policy#4"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.80406445,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "unanswerable-01",
+          "type": "unanswerable",
+          "question": "What is the maternity leave policy?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#1",
+            "leave-policy#-",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "salary-advance-policy#-",
+            "leave-policy#2",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.72725856,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "unanswerable-02",
+          "type": "unanswerable",
+          "question": "What is the office dress code?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#2",
+            "leave-policy#6",
+            "leave-policy#-",
+            "salary-advance-policy#4",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.575874,
+          "top_score": 0.01639344262295082
+        },
+        {
+          "id": "unanswerable-03",
+          "type": "unanswerable",
+          "question": "Can I work from home on Fridays?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "salary-advance-policy#1",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.59602046,
+          "top_score": 0.03252247488101534
+        },
+        {
+          "id": "unanswerable-04",
+          "type": "unanswerable",
+          "question": "Does the company reimburse gym membership?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#2",
+            "salary-advance-policy#1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.6153307,
+          "top_score": 0.032266458495966696
+        },
+        {
+          "id": "unanswerable-05",
+          "type": "unanswerable",
+          "question": "How is overtime pay calculated?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#2",
+            "leave-policy#4",
+            "salary-advance-policy#3",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.61441374,
+          "top_score": 0.01639344262295082
+        },
+        {
+          "id": "unanswerable-06",
+          "type": "unanswerable",
+          "question": "What is the capital of France?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#-",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#4",
+            "leave-policy#3.2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.43421537,
+          "top_score": 0.01639344262295082
+        }
+      ]
+    },
+    {
+      "name": "dense + ms-marco-MiniLM-L-6-v2",
+      "hit_at_1": 0.8484848484848485,
+      "hit_at_3": 0.9090909090909091,
+      "hit_at_5": 1.0,
+      "mrr": 0.8964646464646464,
+      "by_type": {
+        "exact": {
+          "n": 7,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "keyword": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "misspelling": {
+          "n": 5,
+          "hit@1": 0.8,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit@1": 0.7692307692307693,
+          "hit@5": 1.0
+        },
+        "policy_name": {
+          "n": 2,
+          "hit@1": 0.5,
+          "hit@5": 1.0
+        }
+      },
+      "unanswerable_referred": "1/6",
+      "answerable_wrongly_referred": "0/33",
+      "avg_ms": 184.0,
+      "questions": [
+        {
+          "id": "exact-01",
+          "type": "exact",
+          "question": "How many days of sick leave per calendar year?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.9057721,
+          "top_score": 9.498408317565918
+        },
+        {
+          "id": "exact-02",
+          "type": "exact",
+          "question": "Can casual leave be carried forward to the next year?",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#5",
+            "leave-policy#-",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.803606,
+          "top_score": 9.356256484985352
+        },
+        {
+          "id": "exact-03",
+          "type": "exact",
+          "question": "What is the maximum earned leave that can be carried forward?",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#5",
+            "leave-policy#4",
+            "salary-advance-policy#2",
+            "leave-policy#3.2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.79905576,
+          "top_score": 7.203409194946289
+        },
+        {
+          "id": "exact-04",
+          "type": "exact",
+          "question": "Within how many calendar days must travel claims be submitted?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8822768,
+          "top_score": 9.827417373657227
+        },
+        {
+          "id": "exact-05",
+          "type": "exact",
+          "question": "What is the maximum salary advance amount?",
+          "expected": [
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.85367984,
+          "top_score": 8.082913398742676
+        },
+        {
+          "id": "exact-06",
+          "type": "exact",
+          "question": "How many instalments are allowed to repay a salary advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8606808,
+          "top_score": 8.424470901489258
+        },
+        {
+          "id": "exact-07",
+          "type": "exact",
+          "question": "Can earned leave be taken during the notice period?",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "salary-advance-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8735467,
+          "top_score": 10.451821327209473
+        },
+        {
+          "id": "keyword-01",
+          "type": "keyword",
+          "question": "form SA-1",
+          "expected": [
+            "salary-advance-policy#4"
+          ],
+          "retrieved": [
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#5"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7708612,
+          "top_score": 6.609729766845703
+        },
+        {
+          "id": "keyword-02",
+          "type": "keyword",
+          "question": "Grade C other city per day",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#4",
+            "salary-advance-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7895331,
+          "top_score": 6.796469688415527
+        },
+        {
+          "id": "keyword-03",
+          "type": "keyword",
+          "question": "medical certificate",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#4",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5828632,
+          "top_score": -0.2375001758337021
+        },
+        {
+          "id": "keyword-04",
+          "type": "keyword",
+          "question": "boarding passes hotel invoices",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7787103,
+          "top_score": 5.043886661529541
+        },
+        {
+          "id": "keyword-05",
+          "type": "keyword",
+          "question": "HR Business Partner written approval",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "salary-advance-policy#4",
+            "leave-policy#4",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "leave-policy#7",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.75545704,
+          "top_score": 5.378870964050293
+        },
+        {
+          "id": "keyword-06",
+          "type": "keyword",
+          "question": "department head international travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7106172,
+          "top_score": 4.961813926696777
+        },
+        {
+          "id": "paraphrase-01",
+          "type": "paraphrase",
+          "question": "How much time off do I get when I'm unwell?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#5",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7311607,
+          "top_score": -6.213500022888184
+        },
+        {
+          "id": "paraphrase-02",
+          "type": "paraphrase",
+          "question": "Can people still in their trial period take annual leave?",
+          "expected": [
+            "leave-policy#6",
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#6",
+            "leave-policy#5",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#1",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.72865015,
+          "top_score": -5.890418529510498
+        },
+        {
+          "id": "paraphrase-03",
+          "type": "paraphrase",
+          "question": "What paperwork do I need to get my business trip costs paid back?",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7678092,
+          "top_score": -5.312848091125488
+        },
+        {
+          "id": "paraphrase-04",
+          "type": "paraphrase",
+          "question": "How long after coming back from a work trip can I file my expenses?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78913474,
+          "top_score": 0.4404902458190918
+        },
+        {
+          "id": "paraphrase-05",
+          "type": "paraphrase",
+          "question": "Who signs off on my vacation request?",
+          "expected": [
+            "leave-policy#4"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#4",
+            "leave-policy#4",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#-",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": 0.6580786,
+          "top_score": -8.693872451782227
+        },
+        {
+          "id": "paraphrase-06",
+          "type": "paraphrase",
+          "question": "How soon will I get the money for my expense claim?",
+          "expected": [
+            "travel-reimbursement-policy#4.3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7546757,
+          "top_score": -0.3756522238254547
+        },
+        {
+          "id": "paraphrase-07",
+          "type": "paraphrase",
+          "question": "Can I borrow money from the company against my pay?",
+          "expected": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": 0.61782295,
+          "top_score": -8.486090660095215
+        },
+        {
+          "id": "paraphrase-08",
+          "type": "paraphrase",
+          "question": "Is interest charged when I pay back the advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78246427,
+          "top_score": 7.916029930114746
+        },
+        {
+          "id": "paraphrase-09",
+          "type": "paraphrase",
+          "question": "Can I get a bigger advance in an emergency?",
+          "expected": [
+            "salary-advance-policy#5"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3",
+            "salary-advance-policy#5",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": 0.6738674,
+          "top_score": -7.068631172180176
+        },
+        {
+          "id": "paraphrase-10",
+          "type": "paraphrase",
+          "question": "Do interns get any days off?",
+          "expected": [
+            "leave-policy#6"
+          ],
+          "retrieved": [
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.6407347,
+          "top_score": -6.425909996032715
+        },
+        {
+          "id": "paraphrase-11",
+          "type": "paraphrase",
+          "question": "Do I need a doctor's note if I'm off sick for a few days?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#6",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-",
+            "leave-policy#5",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.69607186,
+          "top_score": -6.12065315246582
+        },
+        {
+          "id": "paraphrase-12",
+          "type": "paraphrase",
+          "question": "Whose permission do I need before flying abroad for work?",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#5",
+            "leave-policy#2",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73765033,
+          "top_score": 0.0717618390917778
+        },
+        {
+          "id": "paraphrase-13",
+          "type": "paraphrase",
+          "question": "What is the daily allowance for a senior employee visiting a big city?",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7912633,
+          "top_score": 3.174762725830078
+        },
+        {
+          "id": "misspelling-01",
+          "type": "misspelling",
+          "question": "how many sik leaves do i get",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#-",
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "leave-policy#2",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.56096625,
+          "top_score": -9.801167488098145
+        },
+        {
+          "id": "misspelling-02",
+          "type": "misspelling",
+          "question": "trvel claim documnets needed",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.6858842,
+          "top_score": -10.947338104248047
+        },
+        {
+          "id": "misspelling-03",
+          "type": "misspelling",
+          "question": "salery advanse instalments",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#-",
+            "salary-advance-policy#5",
+            "leave-policy#3.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5899854,
+          "top_score": -10.186256408691406
+        },
+        {
+          "id": "misspelling-04",
+          "type": "misspelling",
+          "question": "earnd leave carry foward",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#5",
+            "leave-policy#4",
+            "leave-policy#3.1",
+            "leave-policy#-",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73665154,
+          "top_score": -2.5931718349456787
+        },
+        {
+          "id": "misspelling-05",
+          "type": "misspelling",
+          "question": "casul leave consecutive days limit",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#2",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.67783886,
+          "top_score": -2.475827693939209
+        },
+        {
+          "id": "policy-name-01",
+          "type": "policy_name",
+          "question": "Salary Advance Policy eligibility",
+          "expected": [
+            "salary-advance-policy#1"
+          ],
+          "retrieved": [
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#2",
+            "leave-policy#1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#1"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.7907251,
+          "top_score": 5.631162643432617
+        },
+        {
+          "id": "policy-name-02",
+          "type": "policy_name",
+          "question": "Travel and Reimbursement Policy approval before travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#-",
+            "leave-policy#2",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.80406445,
+          "top_score": 6.009521484375
+        },
+        {
+          "id": "unanswerable-01",
+          "type": "unanswerable",
+          "question": "What is the maternity leave policy?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#2",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.72725856,
+          "top_score": -2.349013566970825
+        },
+        {
+          "id": "unanswerable-02",
+          "type": "unanswerable",
+          "question": "What is the office dress code?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "leave-policy#2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "salary-advance-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.575874,
+          "top_score": -11.022897720336914
+        },
+        {
+          "id": "unanswerable-03",
+          "type": "unanswerable",
+          "question": "Can I work from home on Fridays?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.3",
+            "salary-advance-policy#1",
+            "leave-policy#5",
+            "leave-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.59602046,
+          "top_score": -10.598129272460938
+        },
+        {
+          "id": "unanswerable-04",
+          "type": "unanswerable",
+          "question": "Does the company reimburse gym membership?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#2",
+            "salary-advance-policy#1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.6153307,
+          "top_score": -8.366390228271484
+        },
+        {
+          "id": "unanswerable-05",
+          "type": "unanswerable",
+          "question": "How is overtime pay calculated?",
+          "expected": [],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.61441374,
+          "top_score": -5.887803077697754
+        },
+        {
+          "id": "unanswerable-06",
+          "type": "unanswerable",
+          "question": "What is the capital of France?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#3",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.43421537,
+          "top_score": -11.16702938079834
+        }
+      ]
+    },
+    {
+      "name": "hybrid + ms-marco-MiniLM-L-6-v2",
+      "hit_at_1": 0.8484848484848485,
+      "hit_at_3": 0.9090909090909091,
+      "hit_at_5": 1.0,
+      "mrr": 0.8934343434343434,
+      "by_type": {
+        "exact": {
+          "n": 7,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "keyword": {
+          "n": 6,
+          "hit@1": 1.0,
+          "hit@5": 1.0
+        },
+        "misspelling": {
+          "n": 5,
+          "hit@1": 0.8,
+          "hit@5": 1.0
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit@1": 0.7692307692307693,
+          "hit@5": 1.0
+        },
+        "policy_name": {
+          "n": 2,
+          "hit@1": 0.5,
+          "hit@5": 1.0
+        }
+      },
+      "unanswerable_referred": "1/6",
+      "answerable_wrongly_referred": "0/33",
+      "avg_ms": 193.8,
+      "questions": [
+        {
+          "id": "exact-01",
+          "type": "exact",
+          "question": "How many days of sick leave per calendar year?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.9057721,
+          "top_score": 9.498408317565918
+        },
+        {
+          "id": "exact-02",
+          "type": "exact",
+          "question": "Can casual leave be carried forward to the next year?",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#5",
+            "leave-policy#-",
+            "leave-policy#1",
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.803606,
+          "top_score": 9.356256484985352
+        },
+        {
+          "id": "exact-03",
+          "type": "exact",
+          "question": "What is the maximum earned leave that can be carried forward?",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "leave-policy#5",
+            "leave-policy#4",
+            "salary-advance-policy#2",
+            "leave-policy#3.2",
+            "salary-advance-policy#3",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.79905576,
+          "top_score": 7.203409194946289
+        },
+        {
+          "id": "exact-04",
+          "type": "exact",
+          "question": "Within how many calendar days must travel claims be submitted?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#4",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8822768,
+          "top_score": 9.827417373657227
+        },
+        {
+          "id": "exact-05",
+          "type": "exact",
+          "question": "What is the maximum salary advance amount?",
+          "expected": [
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "leave-policy#3.3",
+            "leave-policy#4",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#5"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.85367984,
+          "top_score": 8.082913398742676
+        },
+        {
+          "id": "exact-06",
+          "type": "exact",
+          "question": "How many instalments are allowed to repay a salary advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#-",
+            "salary-advance-policy#5",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8606808,
+          "top_score": 8.424470901489258
+        },
+        {
+          "id": "exact-07",
+          "type": "exact",
+          "question": "Can earned leave be taken during the notice period?",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "leave-policy#4",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "salary-advance-policy#1",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "salary-advance-policy#5",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.8735467,
+          "top_score": 10.451821327209473
+        },
+        {
+          "id": "keyword-01",
+          "type": "keyword",
+          "question": "form SA-1",
+          "expected": [
+            "salary-advance-policy#4"
+          ],
+          "retrieved": [
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7708612,
+          "top_score": 6.609729766845703
+        },
+        {
+          "id": "keyword-02",
+          "type": "keyword",
+          "question": "Grade C other city per day",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#4",
+            "salary-advance-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7895331,
+          "top_score": 6.796469688415527
+        },
+        {
+          "id": "keyword-03",
+          "type": "keyword",
+          "question": "medical certificate",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#4",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5828632,
+          "top_score": -0.2375001758337021
+        },
+        {
+          "id": "keyword-04",
+          "type": "keyword",
+          "question": "boarding passes hotel invoices",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7787103,
+          "top_score": 5.043886661529541
+        },
+        {
+          "id": "keyword-05",
+          "type": "keyword",
+          "question": "HR Business Partner written approval",
+          "expected": [
+            "leave-policy#5"
+          ],
+          "retrieved": [
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "salary-advance-policy#4",
+            "leave-policy#4",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "leave-policy#7",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.75545704,
+          "top_score": 5.378870964050293
+        },
+        {
+          "id": "keyword-06",
+          "type": "keyword",
+          "question": "department head international travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#4",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#2",
+            "leave-policy#-",
+            "leave-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7106172,
+          "top_score": 4.961813926696777
+        },
+        {
+          "id": "paraphrase-01",
+          "type": "paraphrase",
+          "question": "How much time off do I get when I'm unwell?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#2",
+            "leave-policy#5",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7311607,
+          "top_score": -6.213500022888184
+        },
+        {
+          "id": "paraphrase-02",
+          "type": "paraphrase",
+          "question": "Can people still in their trial period take annual leave?",
+          "expected": [
+            "leave-policy#6",
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#6",
+            "leave-policy#5",
+            "leave-policy#3.1",
+            "leave-policy#3.3",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "salary-advance-policy#1",
+            "salary-advance-policy#5",
+            "leave-policy#1",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.72865015,
+          "top_score": -5.890418529510498
+        },
+        {
+          "id": "paraphrase-03",
+          "type": "paraphrase",
+          "question": "What paperwork do I need to get my business trip costs paid back?",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7678092,
+          "top_score": -5.312848091125488
+        },
+        {
+          "id": "paraphrase-04",
+          "type": "paraphrase",
+          "question": "How long after coming back from a work trip can I file my expenses?",
+          "expected": [
+            "travel-reimbursement-policy#4.1"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78913474,
+          "top_score": 0.4404902458190918
+        },
+        {
+          "id": "paraphrase-05",
+          "type": "paraphrase",
+          "question": "Who signs off on my vacation request?",
+          "expected": [
+            "leave-policy#4"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#4",
+            "salary-advance-policy#1",
+            "leave-policy#4",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-"
+          ],
+          "first_correct_rank": 5,
+          "best_dense_score": 0.6580786,
+          "top_score": -8.693872451782227
+        },
+        {
+          "id": "paraphrase-06",
+          "type": "paraphrase",
+          "question": "How soon will I get the money for my expense claim?",
+          "expected": [
+            "travel-reimbursement-policy#4.3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7546757,
+          "top_score": -0.3756522238254547
+        },
+        {
+          "id": "paraphrase-07",
+          "type": "paraphrase",
+          "question": "Can I borrow money from the company against my pay?",
+          "expected": [
+            "salary-advance-policy#1",
+            "salary-advance-policy#2"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#5",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#2",
+            "leave-policy#5",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 4,
+          "best_dense_score": 0.61782295,
+          "top_score": -8.486090660095215
+        },
+        {
+          "id": "paraphrase-08",
+          "type": "paraphrase",
+          "question": "Is interest charged when I pay back the advance?",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#4",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.78246427,
+          "top_score": 7.916029930114746
+        },
+        {
+          "id": "paraphrase-09",
+          "type": "paraphrase",
+          "question": "Can I get a bigger advance in an emergency?",
+          "expected": [
+            "salary-advance-policy#5"
+          ],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "salary-advance-policy#5",
+            "salary-advance-policy#-",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#3",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": 5,
+          "best_dense_score": 0.6738674,
+          "top_score": -7.068631172180176
+        },
+        {
+          "id": "paraphrase-10",
+          "type": "paraphrase",
+          "question": "Do interns get any days off?",
+          "expected": [
+            "leave-policy#6"
+          ],
+          "retrieved": [
+            "leave-policy#6",
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.6407347,
+          "top_score": -6.425909996032715
+        },
+        {
+          "id": "paraphrase-11",
+          "type": "paraphrase",
+          "question": "Do I need a doctor's note if I'm off sick for a few days?",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "leave-policy#6",
+            "salary-advance-policy#5",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#5",
+            "leave-policy#3.3",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.69607186,
+          "top_score": -6.12065315246582
+        },
+        {
+          "id": "paraphrase-12",
+          "type": "paraphrase",
+          "question": "Whose permission do I need before flying abroad for work?",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#4",
+            "leave-policy#3.1",
+            "leave-policy#5",
+            "leave-policy#2",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#4.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73765033,
+          "top_score": 0.0717618390917778
+        },
+        {
+          "id": "paraphrase-13",
+          "type": "paraphrase",
+          "question": "What is the daily allowance for a senior employee visiting a big city?",
+          "expected": [
+            "travel-reimbursement-policy#2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.1",
+            "travel-reimbursement-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "leave-policy#2",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.7912633,
+          "top_score": 3.174762725830078
+        },
+        {
+          "id": "misspelling-01",
+          "type": "misspelling",
+          "question": "how many sik leaves do i get",
+          "expected": [
+            "leave-policy#3.2"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#-",
+            "salary-advance-policy#3",
+            "salary-advance-policy#2",
+            "leave-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 3,
+          "best_dense_score": 0.56096625,
+          "top_score": -9.801167488098145
+        },
+        {
+          "id": "misspelling-02",
+          "type": "misspelling",
+          "question": "trvel claim documnets needed",
+          "expected": [
+            "travel-reimbursement-policy#4.2"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#1",
+            "salary-advance-policy#-",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.6858842,
+          "top_score": -10.947338104248047
+        },
+        {
+          "id": "misspelling-03",
+          "type": "misspelling",
+          "question": "salery advanse instalments",
+          "expected": [
+            "salary-advance-policy#3"
+          ],
+          "retrieved": [
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#4",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.2",
+            "leave-policy#-",
+            "travel-reimbursement-policy#4.3",
+            "salary-advance-policy#-",
+            "salary-advance-policy#5",
+            "leave-policy#3.3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.5899854,
+          "top_score": -10.186256408691406
+        },
+        {
+          "id": "misspelling-04",
+          "type": "misspelling",
+          "question": "earnd leave carry foward",
+          "expected": [
+            "leave-policy#3.3"
+          ],
+          "retrieved": [
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#5",
+            "leave-policy#4",
+            "leave-policy#3.1",
+            "leave-policy#-",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "salary-advance-policy#1",
+            "salary-advance-policy#3"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.73665154,
+          "top_score": -2.5931718349456787
+        },
+        {
+          "id": "misspelling-05",
+          "type": "misspelling",
+          "question": "casul leave consecutive days limit",
+          "expected": [
+            "leave-policy#3.1"
+          ],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#3.2",
+            "leave-policy#3.3",
+            "leave-policy#6",
+            "leave-policy#4",
+            "leave-policy#-",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.1",
+            "leave-policy#1",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.67783886,
+          "top_score": -2.475827693939209
+        },
+        {
+          "id": "policy-name-01",
+          "type": "policy_name",
+          "question": "Salary Advance Policy eligibility",
+          "expected": [
+            "salary-advance-policy#1"
+          ],
+          "retrieved": [
+            "salary-advance-policy#-",
+            "salary-advance-policy#1",
+            "salary-advance-policy#2",
+            "salary-advance-policy#3",
+            "leave-policy#4",
+            "leave-policy#2",
+            "leave-policy#1",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#-",
+            "leave-policy#-"
+          ],
+          "first_correct_rank": 2,
+          "best_dense_score": 0.7907251,
+          "top_score": 5.631162643432617
+        },
+        {
+          "id": "policy-name-02",
+          "type": "policy_name",
+          "question": "Travel and Reimbursement Policy approval before travel",
+          "expected": [
+            "travel-reimbursement-policy#3"
+          ],
+          "retrieved": [
+            "travel-reimbursement-policy#3",
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "travel-reimbursement-policy#4.2",
+            "salary-advance-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#4",
+            "leave-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": 1,
+          "best_dense_score": 0.80406445,
+          "top_score": 6.009521484375
+        },
+        {
+          "id": "unanswerable-01",
+          "type": "unanswerable",
+          "question": "What is the maternity leave policy?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#1",
+            "leave-policy#-",
+            "leave-policy#3.1",
+            "leave-policy#2",
+            "leave-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#6",
+            "travel-reimbursement-policy#-",
+            "leave-policy#3.3",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.72725856,
+          "top_score": -2.349013566970825
+        },
+        {
+          "id": "unanswerable-02",
+          "type": "unanswerable",
+          "question": "What is the office dress code?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#2",
+            "leave-policy#2",
+            "leave-policy#3.1",
+            "leave-policy#6",
+            "salary-advance-policy#4",
+            "leave-policy#3.2",
+            "leave-policy#1",
+            "leave-policy#-",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.575874,
+          "top_score": -11.022897720336914
+        },
+        {
+          "id": "unanswerable-03",
+          "type": "unanswerable",
+          "question": "Can I work from home on Fridays?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#3.1",
+            "leave-policy#4",
+            "leave-policy#6",
+            "leave-policy#3.2",
+            "travel-reimbursement-policy#2",
+            "leave-policy#3.3",
+            "salary-advance-policy#1",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#5",
+            "leave-policy#1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.59602046,
+          "top_score": -10.598129272460938
+        },
+        {
+          "id": "unanswerable-04",
+          "type": "unanswerable",
+          "question": "Does the company reimburse gym membership?",
+          "expected": [],
+          "retrieved": [
+            "travel-reimbursement-policy#-",
+            "travel-reimbursement-policy#1",
+            "travel-reimbursement-policy#4.1",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#2",
+            "leave-policy#2",
+            "salary-advance-policy#1",
+            "leave-policy#5",
+            "travel-reimbursement-policy#4.3",
+            "travel-reimbursement-policy#4.2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.6153307,
+          "top_score": -8.366390228271484
+        },
+        {
+          "id": "unanswerable-05",
+          "type": "unanswerable",
+          "question": "How is overtime pay calculated?",
+          "expected": [],
+          "retrieved": [
+            "salary-advance-policy#2",
+            "travel-reimbursement-policy#2",
+            "salary-advance-policy#3",
+            "travel-reimbursement-policy#4.3",
+            "leave-policy#3.3",
+            "leave-policy#3.1",
+            "leave-policy#1",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#4.1"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.61441374,
+          "top_score": -5.887803077697754
+        },
+        {
+          "id": "unanswerable-06",
+          "type": "unanswerable",
+          "question": "What is the capital of France?",
+          "expected": [],
+          "retrieved": [
+            "leave-policy#-",
+            "travel-reimbursement-policy#2",
+            "travel-reimbursement-policy#-",
+            "salary-advance-policy#-",
+            "leave-policy#3.2",
+            "leave-policy#4",
+            "travel-reimbursement-policy#3",
+            "leave-policy#2",
+            "travel-reimbursement-policy#4.2",
+            "travel-reimbursement-policy#2"
+          ],
+          "first_correct_rank": null,
+          "best_dense_score": 0.43421537,
+          "top_score": -11.16702938079834
+        }
+      ]
+    }
+  ]
+}

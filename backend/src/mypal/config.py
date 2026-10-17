@@ -60,11 +60,22 @@ class Settings(BaseSettings):
     llm_disable_reasoning: bool = True
 
     # --- Retrieval and answering ---
+    # "hybrid" = meaning search + BM25 keyword search merged with RRF; "dense" = meaning only.
+    retrieval_mode: Literal["dense", "hybrid"] = "hybrid"
+    # How many results each search returns before fusion / reranking.
+    retrieval_candidates: int = Field(default=20, ge=1, le=100)
+    rrf_k: int = Field(default=60, ge=1, le=1000)
+    # Cross-encoder reranker (fastembed name), or empty for none. Chosen by measurement
+    # (backend/eval/README.md): it raised hit@1 from 79% to 85% and hit@5 from 94% to 100%.
+    reranker_model: str | None = "Xenova/ms-marco-MiniLM-L-6-v2"
+    rerank_candidates: int = Field(default=10, ge=1, le=50)
     retrieval_top_k: int = Field(default=5, ge=1, le=20)
-    # Below this similarity the evidence is too weak: refer to HR without calling the LLM.
-    # Calibrated on the fictional samples with bge-small-en-v1.5: relevant 0.82-0.90,
-    # off-topic 0.43-0.60. Re-check on real policies (Phase 5 measures this properly).
-    retrieval_min_score: float = Field(default=0.65, ge=0, le=1)
+    # Below this cosine similarity the evidence is too weak: refer to HR without calling the
+    # LLM. Measured on the fictional set: answerable questions scored 0.56-0.91, unanswerable
+    # 0.43-0.73 - they overlap, so no threshold separates them. 0.55 only stops clearly
+    # unrelated questions; borderline ones are refused by the model's "not in policy" path and
+    # the validator. Re-measure on real HR policies.
+    retrieval_min_score: float = Field(default=0.55, ge=0, le=1)
     question_max_chars: int = Field(default=1000, ge=50, le=5000)
 
     # --- Authentication ---

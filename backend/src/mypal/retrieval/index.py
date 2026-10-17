@@ -1,11 +1,14 @@
-"""The Qdrant vector index.
+"""The Qdrant index.
 
-Each point is one chunk: its id is the chunk's UUID, its vector is the chunk's embedding, and its
-payload holds only the chunk id and version id. Policy text, titles and links stay in Postgres,
-which remains the source of truth; this index can always be rebuilt from it.
+Each point is one chunk: its id is the chunk's UUID, and it carries two named vectors:
+- "dense": the meaning vector (cosine similarity);
+- "bm25":  the sparse keyword vector; Qdrant applies the IDF (word rarity) part of BM25.
+Its payload holds only the chunk id and version id. Policy text, titles and links stay in
+Postgres, which remains the source of truth; this index can always be rebuilt from it.
 
-Every search MUST pass the list of version ids the asker is allowed to see (from the scope
-resolver). With an empty list, nothing is searched at all.
+Every search MUST pass the list of version ids the asker is allowed to see (from the scope gate).
+The same filter is applied to the dense and the keyword search. With an empty list, nothing is
+searched at all.
 """
 
 import uuid
@@ -16,13 +19,19 @@ from urllib.parse import urlparse
 from qdrant_client import QdrantClient, models
 
 from mypal.config import Settings
+from mypal.retrieval.embeddings import SparseEmbedding
+
+DENSE = "dense"
+SPARSE = "bm25"
 
 
 @dataclass(frozen=True)
 class SearchHit:
     chunk_id: uuid.UUID
     version_id: uuid.UUID
-    score: float  # cosine similarity: higher is more similar
+    # Dense: cosine similarity (-1..1, higher is more similar).
+    # BM25: an unbounded relevance score, only meaningful for ranking within one query.
+    score: float
 
 
 class IndexConfigurationError(RuntimeError):
@@ -35,18 +44,37 @@ class VectorIndex:
         self.collection = collection
 
     def ensure_collection(self, dimension: int) -> None:
-        if self._client.collection_exists(self.collection):
-            existing = self._client.get_collection(self.collection).config.params.vectors
-            size = existing.size if isinstance(existing, models.VectorParams) else None
-            if size != dimension:
-                raise IndexConfigurationError(
-                    f"Collection {self.collection!r} holds {size}-dimension vectors but the "
-                    f"embedding model produces {dimension}. Re-index with the new model."
-                )
+        if not self._client.collection_exists(self.collection):
+            self._create(dimension)
             return
+        params = self._client.get_collection(self.collection).config.params
+        dense = params.vectors.get(DENSE) if isinstance(params.vectors, dict) else None
+        if dense is None or SPARSE not in (params.sparse_vectors or {}):
+            raise IndexConfigurationError(
+                f"Collection {self.collection!r} uses an older layout without hybrid search. "
+                "Rebuild it from Postgres with: uv run mypal-policy reindex --recreate"
+            )
+        if dense.size != dimension:
+            raise IndexConfigurationError(
+                f"Collection {self.collection!r} holds {dense.size}-dimension vectors but the "
+                f"embedding model produces {dimension}. Rebuild it with: "
+                "uv run mypal-policy reindex --recreate"
+            )
+
+    def recreate(self, dimension: int) -> None:
+        """Drop and recreate the collection. Safe only because Postgres holds the truth and
+        every active version is re-indexed right afterwards."""
+        if self._client.collection_exists(self.collection):
+            self._client.delete_collection(self.collection)
+        self._create(dimension)
+
+    def _create(self, dimension: int) -> None:
         self._client.create_collection(
             self.collection,
-            vectors_config=models.VectorParams(size=dimension, distance=models.Distance.COSINE),
+            vectors_config={
+                DENSE: models.VectorParams(size=dimension, distance=models.Distance.COSINE)
+            },
+            sparse_vectors_config={SPARSE: models.SparseVectorParams(modifier=models.Modifier.IDF)},
         )
         # An index on version_id keeps the scope filter fast as the corpus grows.
         self._client.create_payload_index(
@@ -57,7 +85,8 @@ class VectorIndex:
         self,
         version_id: uuid.UUID,
         chunk_ids: list[uuid.UUID],
-        vectors: list[list[float]],
+        dense_vectors: list[list[float]],
+        sparse_vectors: list[SparseEmbedding],
     ) -> None:
         """Replace all points of one version (safe to repeat: re-indexing is idempotent)."""
         self.delete_version(version_id)
@@ -66,10 +95,15 @@ class VectorIndex:
             points=[
                 models.PointStruct(
                     id=str(chunk_id),
-                    vector=vector,
+                    vector={
+                        DENSE: dense,
+                        SPARSE: models.SparseVector(indices=sparse.indices, values=sparse.values),
+                    },
                     payload={"chunk_id": str(chunk_id), "version_id": str(version_id)},
                 )
-                for chunk_id, vector in zip(chunk_ids, vectors, strict=True)
+                for chunk_id, dense, sparse in zip(
+                    chunk_ids, dense_vectors, sparse_vectors, strict=True
+                )
             ],
             wait=True,
         )
@@ -81,9 +115,23 @@ class VectorIndex:
             wait=True,
         )
 
-    def search(
+    def search_dense(
+        self, vector: list[float], allowed_version_ids: list[uuid.UUID], limit: int
+    ) -> list[SearchHit]:
+        return self._search(vector, DENSE, allowed_version_ids, limit)
+
+    def search_sparse(
+        self, vector: SparseEmbedding, allowed_version_ids: list[uuid.UUID], limit: int
+    ) -> list[SearchHit]:
+        if not vector.indices:  # e.g. a question made only of stop words
+            return []
+        query = models.SparseVector(indices=vector.indices, values=vector.values)
+        return self._search(query, SPARSE, allowed_version_ids, limit)
+
+    def _search(
         self,
-        vector: list[float],
+        query: list[float] | models.SparseVector,
+        using: str,
         allowed_version_ids: list[uuid.UUID],
         limit: int,
     ) -> list[SearchHit]:
@@ -91,7 +139,8 @@ class VectorIndex:
             return []  # nothing the asker may see: do not query at all
         response = self._client.query_points(
             self.collection,
-            query=vector,
+            query=query,
+            using=using,
             query_filter=_versions_filter(allowed_version_ids),
             limit=limit,
             with_payload=True,
@@ -108,6 +157,9 @@ class VectorIndex:
 
     def count(self) -> int:
         return self._client.count(self.collection, exact=True).count
+
+    def drop(self) -> None:
+        self._client.delete_collection(self.collection)
 
 
 def _versions_filter(version_ids: list[uuid.UUID]) -> models.Filter:

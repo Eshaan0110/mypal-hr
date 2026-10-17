@@ -1,0 +1,54 @@
+{
+  "description": "Retrieval evaluation questions for the FICTIONAL sample policies (Demo Health Services). Each question lists the policy sections that a good search must return. Questions with an empty 'expected' list are not covered by any policy and should be referred to HR. This is a development set written by the developer, NOT the HR-approved golden set required in Phase 8.",
+  "documents": [
+    {"file": "leave-policy-v1.pdf", "policy_key": "leave-policy"},
+    {"file": "travel-reimbursement-policy-v1.docx", "policy_key": "travel-reimbursement-policy"},
+    {"file": "salary-advance-policy-v1.pdf", "policy_key": "salary-advance-policy"}
+  ],
+  "questions": [
+    {"id": "exact-01", "type": "exact", "question": "How many days of sick leave per calendar year?", "expected": ["leave-policy#3.2"]},
+    {"id": "exact-02", "type": "exact", "question": "Can casual leave be carried forward to the next year?", "expected": ["leave-policy#3.1"]},
+    {"id": "exact-03", "type": "exact", "question": "What is the maximum earned leave that can be carried forward?", "expected": ["leave-policy#3.3"]},
+    {"id": "exact-04", "type": "exact", "question": "Within how many calendar days must travel claims be submitted?", "expected": ["travel-reimbursement-policy#4.1"]},
+    {"id": "exact-05", "type": "exact", "question": "What is the maximum salary advance amount?", "expected": ["salary-advance-policy#2"]},
+    {"id": "exact-06", "type": "exact", "question": "How many instalments are allowed to repay a salary advance?", "expected": ["salary-advance-policy#3"]},
+    {"id": "exact-07", "type": "exact", "question": "Can earned leave be taken during the notice period?", "expected": ["leave-policy#5"]},
+
+    {"id": "keyword-01", "type": "keyword", "question": "form SA-1", "expected": ["salary-advance-policy#4"]},
+    {"id": "keyword-02", "type": "keyword", "question": "Grade C other city per day", "expected": ["travel-reimbursement-policy#2"]},
+    {"id": "keyword-03", "type": "keyword", "question": "medical certificate", "expected": ["leave-policy#3.2"]},
+    {"id": "keyword-04", "type": "keyword", "question": "boarding passes hotel invoices", "expected": ["travel-reimbursement-policy#4.2"]},
+    {"id": "keyword-05", "type": "keyword", "question": "HR Business Partner written approval", "expected": ["leave-policy#5"]},
+    {"id": "keyword-06", "type": "keyword", "question": "department head international travel", "expected": ["travel-reimbursement-policy#3"]},
+
+    {"id": "paraphrase-01", "type": "paraphrase", "question": "How much time off do I get when I'm unwell?", "expected": ["leave-policy#3.2"]},
+    {"id": "paraphrase-02", "type": "paraphrase", "question": "Can people still in their trial period take annual leave?", "expected": ["leave-policy#6", "leave-policy#3.3"]},
+    {"id": "paraphrase-03", "type": "paraphrase", "question": "What paperwork do I need to get my business trip costs paid back?", "expected": ["travel-reimbursement-policy#4.2"]},
+    {"id": "paraphrase-04", "type": "paraphrase", "question": "How long after coming back from a work trip can I file my expenses?", "expected": ["travel-reimbursement-policy#4.1"]},
+    {"id": "paraphrase-05", "type": "paraphrase", "question": "Who signs off on my vacation request?", "expected": ["leave-policy#4"]},
+    {"id": "paraphrase-06", "type": "paraphrase", "question": "How soon will I get the money for my expense claim?", "expected": ["travel-reimbursement-policy#4.3"]},
+    {"id": "paraphrase-07", "type": "paraphrase", "question": "Can I borrow money from the company against my pay?", "expected": ["salary-advance-policy#1", "salary-advance-policy#2"]},
+    {"id": "paraphrase-08", "type": "paraphrase", "question": "Is interest charged when I pay back the advance?", "expected": ["salary-advance-policy#3"]},
+    {"id": "paraphrase-09", "type": "paraphrase", "question": "Can I get a bigger advance in an emergency?", "expected": ["salary-advance-policy#5"]},
+    {"id": "paraphrase-10", "type": "paraphrase", "question": "Do interns get any days off?", "expected": ["leave-policy#6"]},
+    {"id": "paraphrase-11", "type": "paraphrase", "question": "Do I need a doctor's note if I'm off sick for a few days?", "expected": ["leave-policy#3.2"]},
+    {"id": "paraphrase-12", "type": "paraphrase", "question": "Whose permission do I need before flying abroad for work?", "expected": ["travel-reimbursement-policy#3"]},
+    {"id": "paraphrase-13", "type": "paraphrase", "question": "What is the daily allowance for a senior employee visiting a big city?", "expected": ["travel-reimbursement-policy#2"]},
+
+    {"id": "misspelling-01", "type": "misspelling", "question": "how many sik leaves do i get", "expected": ["leave-policy#3.2"]},
+    {"id": "misspelling-02", "type": "misspelling", "question": "trvel claim documnets needed", "expected": ["travel-reimbursement-policy#4.2"]},
+    {"id": "misspelling-03", "type": "misspelling", "question": "salery advanse instalments", "expected": ["salary-advance-policy#3"]},
+    {"id": "misspelling-04", "type": "misspelling", "question": "earnd leave carry foward", "expected": ["leave-policy#3.3"]},
+    {"id": "misspelling-05", "type": "misspelling", "question": "casul leave consecutive days limit", "expected": ["leave-policy#3.1"]},
+
+    {"id": "policy-name-01", "type": "policy_name", "question": "Salary Advance Policy eligibility", "expected": ["salary-advance-policy#1"]},
+    {"id": "policy-name-02", "type": "policy_name", "question": "Travel and Reimbursement Policy approval before travel", "expected": ["travel-reimbursement-policy#3"]},
+
+    {"id": "unanswerable-01", "type": "unanswerable", "question": "What is the maternity leave policy?", "expected": []},
+    {"id": "unanswerable-02", "type": "unanswerable", "question": "What is the office dress code?", "expected": []},
+    {"id": "unanswerable-03", "type": "unanswerable", "question": "Can I work from home on Fridays?", "expected": []},
+    {"id": "unanswerable-04", "type": "unanswerable", "question": "Does the company reimburse gym membership?", "expected": []},
+    {"id": "unanswerable-05", "type": "unanswerable", "question": "How is overtime pay calculated?", "expected": []},
+    {"id": "unanswerable-06", "type": "unanswerable", "question": "What is the capital of France?", "expected": []}
+  ]
+}

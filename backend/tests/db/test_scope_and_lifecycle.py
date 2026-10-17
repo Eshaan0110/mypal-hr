@@ -13,7 +13,7 @@ from mypal.policies.lifecycle import LifecycleError
 from mypal.retrieval.index import VectorIndex
 from mypal.retrieval.scope import allowed_version_ids
 from tests.factories import REVIEWER, UPLOADER
-from tests.fakes import HashEmbedder
+from tests.fakes import fake_retriever
 from tests.rag_helpers import TODAY, add_version, published, seed_reference
 
 Status = PolicyVersionStatus
@@ -104,7 +104,7 @@ def test_full_lifecycle_writes_an_audit_trail(session: Session, vector_index: Ve
 
     lifecycle.submit_for_review(session, version.id, UPLOADER)
     lifecycle.approve(session, version.id, REVIEWER)
-    lifecycle.publish(session, version.id, REVIEWER, HashEmbedder(), vector_index, TODAY)
+    lifecycle.publish(session, version.id, REVIEWER, fake_retriever(vector_index), TODAY)
 
     assert version.status is Status.ACTIVE
     actions = session.scalars(
@@ -132,7 +132,7 @@ def test_draft_cannot_be_published(session: Session, vector_index: VectorIndex) 
     version = add_version(session, "policy", TEXT, status=Status.DRAFT)
 
     with pytest.raises(LifecycleError, match="only a approved version"):
-        lifecycle.publish(session, version.id, REVIEWER, HashEmbedder(), vector_index, TODAY)
+        lifecycle.publish(session, version.id, REVIEWER, fake_retriever(vector_index), TODAY)
     assert vector_index._client.collection_exists(vector_index.collection) is False
 
 
@@ -142,7 +142,7 @@ def test_future_version_cannot_be_published_yet(
     version = add_version(session, "policy", TEXT, effective_from=date(2026, 12, 1))
 
     with pytest.raises(LifecycleError, match="already in effect"):
-        lifecycle.publish(session, version.id, REVIEWER, HashEmbedder(), vector_index, TODAY)
+        lifecycle.publish(session, version.id, REVIEWER, fake_retriever(vector_index), TODAY)
 
 
 def test_replacement_links_to_and_supersedes_previous_version(

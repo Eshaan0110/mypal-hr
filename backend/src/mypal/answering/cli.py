@@ -15,8 +15,7 @@ from mypal.answering.service import AnswerDependencies, answer_question
 from mypal.auth.dev import DEV_USERS
 from mypal.config import Settings
 from mypal.db.session import create_db_engine, create_session_factory
-from mypal.retrieval.embeddings import create_embedder
-from mypal.retrieval.index import create_index
+from mypal.retrieval.retriever import create_retriever
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -33,8 +32,7 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings()
     deps = AnswerDependencies(
         settings=settings,
-        embedder=create_embedder(settings),
-        index=create_index(settings),
+        retriever=create_retriever(settings),
         llm=create_llm(settings),
     )
     with create_session_factory(create_db_engine(settings))() as session:

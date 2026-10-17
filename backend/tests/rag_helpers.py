@@ -15,7 +15,7 @@ from mypal.db.models import (
 from mypal.policies import lifecycle
 from mypal.retrieval.index import VectorIndex
 from tests.factories import REVIEWER, make_chunk, make_policy, make_version
-from tests.fakes import HashEmbedder
+from tests.fakes import fake_retriever
 
 TODAY = date(2026, 6, 1)
 
@@ -78,7 +78,7 @@ def add_version(
 def publish_version(
     session: Session, index: VectorIndex, version: PolicyVersion, today: date = TODAY
 ) -> PolicyVersion:
-    return lifecycle.publish(session, version.id, REVIEWER, HashEmbedder(), index, today)
+    return lifecycle.publish(session, version.id, REVIEWER, fake_retriever(index), today)
 
 
 def published(session: Session, index: VectorIndex, key: str, passages, **kwargs) -> PolicyVersion:  # noqa: ANN001

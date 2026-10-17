@@ -25,6 +25,7 @@ dependencies = [
 mypal-ingest = "mypal.ingestion.cli:main"
 mypal-policy = "mypal.policies.cli:main"
 mypal-ask = "mypal.answering.cli:main"
+mypal-eval-retrieval = "mypal.evaluation.retrieval:main"
 
 [build-system]
 requires = ["uv_build>=0.10.7,<0.11.0"]
