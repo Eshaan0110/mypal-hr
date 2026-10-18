@@ -29,6 +29,7 @@ class Citation(BaseModel):
     """Built from the database, never from model output."""
 
     chunk_id: uuid.UUID
+    version_id: uuid.UUID
     policy_key: str
     policy_title: str
     version_label: str

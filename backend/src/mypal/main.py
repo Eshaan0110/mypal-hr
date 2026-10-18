@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from mypal.answering.llm import create_llm
 from mypal.answering.service import AnswerDependencies
-from mypal.api import chat, health
+from mypal.api import chat, feedback, health, me
 from mypal.auth.dev import DEV_USER_HEADER
 from mypal.config import Settings, get_settings
 from mypal.db.session import create_db_engine, create_session_factory
@@ -67,4 +67,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_exception_handlers(app)
     app.include_router(health.router, prefix=API_PREFIX)
     app.include_router(chat.router, prefix=API_PREFIX)
+    app.include_router(feedback.router, prefix=API_PREFIX)
+    app.include_router(me.router, prefix=API_PREFIX)
     return app

@@ -108,7 +108,15 @@ How a question is answered (`answering/service.py`):
 6. **Validate** — citations must refer to supplied passages, and every number in the answer must appear in the cited passages. Any failure → referral.
 7. **Cite** — citations (policy, version, section, page, effective date, link) are built from Postgres, never from model text.
 
-Every question writes one `query_metrics` row (outcome, timings, tokens, top score) — no question text, no answer text, no user identity.
+Every question writes one `query_metrics` row (answer id, outcome, cited versions, timings, tokens, top score) — no question text, no answer text, no user identity.
+
+Other endpoints used by the chat interface:
+
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/feedback` | `{answer_id, rating, reason_code?}`. The answer must exist in `query_metrics`; outcome and cited versions are copied from there, never taken from the browser. Reasons are a fixed list; extra fields are rejected. One rating per answer (a second one replaces it). |
+| `GET /api/me` | The logged-in user's scope attributes (company, location, category). |
+| `GET /api/dev/users` | The fictional test users for the development login picker (development mode only). |
 
 ## Layout
 
@@ -127,6 +135,7 @@ Every question writes one `query_metrics` row (outcome, timings, tokens, top sco
 | `eval/` | Evaluation question set and results |
 | `src/mypal/answering/` | Guard, prompts, language-model client, validator, answer pipeline; `mypal-ask` CLI |
 | `src/mypal/auth/` | `Principal` and the development login stand-in |
+| `src/mypal/feedback/` | Recording feedback against a real answer |
 | `src/mypal/observability/` | Request IDs and structured logging |
 | `scripts/` | Development scripts (fictional sample policy generator) |
 | `migrations/` | Alembic environment and migration scripts |

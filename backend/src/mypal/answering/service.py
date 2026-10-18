@@ -220,6 +220,7 @@ def _source_label(policy: Policy, version: PolicyVersion, chunk: Chunk) -> str:
 def _citation(chunk: Chunk, version: PolicyVersion, policy: Policy) -> Citation:
     return Citation(
         chunk_id=chunk.id,
+        version_id=version.id,
         policy_key=policy.policy_key,
         policy_title=policy.title,
         version_label=version.version_label,
@@ -283,10 +284,13 @@ def _record_metrics(
     top_score: float | None,
     request_id: str | None,
 ) -> None:
-    """Performance and cost only: no question text, no answer text, no user identity."""
+    """Performance, cost and what was cited - no question text, no answer text, no user
+    identity. The answer id lets feedback refer to this answer (see feedback/service.py)."""
     session.add(
         QueryMetric(
             request_id=request_id or "none",
+            answer_id=response.answer_id,
+            cited_version_ids=sorted({c.version_id for c in response.citations}, key=str),
             outcome=response.outcome,
             total_ms=_elapsed_ms(timings.started),
             retrieval_ms=timings.retrieval_ms,

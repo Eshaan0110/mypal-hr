@@ -279,3 +279,15 @@ def test_every_question_records_metrics_without_text_or_identity(
     assert not columns & {"question", "message", "answer", "user_id", "subject"}
     assert world.scalar(select(func.count()).select_from(QueryMetric)) == 2
     assert EMPLOYEE in DEV_USERS  # identity exists, yet it was not stored anywhere above
+
+
+def test_each_answer_is_recorded_with_its_id_and_cited_versions(
+    api: TestClient, llm: ScriptedLLM, world: Session
+) -> None:
+    llm.replies = [answer("10 days.", "P1")]
+
+    body = ask(api, "How many days of sick leave do I get?").json()
+
+    metric = world.scalars(select(QueryMetric)).one()
+    assert str(metric.answer_id) == body["answer_id"]
+    assert [str(v) for v in metric.cited_version_ids] == [body["citations"][0]["version_id"]]

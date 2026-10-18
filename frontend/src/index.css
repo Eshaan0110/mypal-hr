@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+/* A restrained palette: slate neutrals, one deep-blue accent, and status colours used only
+   for their meaning (amber = refer to HR, sky = needs more detail, red = error). */
+@theme {
+  --font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --color-brand-50: #eef4fb;
+  --color-brand-100: #d6e4f4;
+  --color-brand-600: #2b5b8f;
+  --color-brand-700: #1e4a78;
+  --color-brand-800: #1e3a5f;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+/* Visible keyboard focus everywhere, never removed. */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-brand-600;
+}

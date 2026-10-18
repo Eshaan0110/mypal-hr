@@ -1,10 +1,16 @@
 """Per-question performance and cost figures, for the cost-per-query view in the plan.
-Contains no question text and no user identifier."""
+Contains no question text, no answer text and no user identifier.
 
+answer_id and cited_version_ids let feedback refer to a real answer: the feedback endpoint takes
+the outcome and the cited versions from here instead of trusting what the browser sends.
+"""
+
+import uuid
 from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import BigInteger, CheckConstraint, Index, Integer, Numeric, String, Text
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from mypal.db.base import Base, created_at
@@ -20,6 +26,11 @@ class QueryMetric(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     request_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    # NULL only for rows recorded before answers had ids (Phase 4).
+    answer_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), unique=True)
+    cited_version_ids: Mapped[list[uuid.UUID]] = mapped_column(
+        ARRAY(UUID(as_uuid=True)), nullable=False, default=list, server_default="{}"
+    )
     outcome: Mapped[AnswerOutcome] = mapped_column(
         str_enum(AnswerOutcome, "outcome"), nullable=False
     )
