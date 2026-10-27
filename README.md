@@ -12,8 +12,13 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 | 3 | Document ingestion (PDF/DOCX parsing, quality checks, chunking, drafts) | Done |
 | 4 | Basic RAG (embeddings, Qdrant, scope gate, grounded cited answers, HR referral) | Done |
 | 5 | Retrieval improvements (BM25 + dense hybrid, RRF, reranker, measured evaluation) | Done |
-| 6 | Employee chat interface (React), feedback, identity endpoints | Awaiting review |
-| 7–9 | HR admin, security/evaluation, packaging | Not started |
+| 6 | Employee chat interface (React), feedback, identity endpoints | Done |
+| 7 | HR administration portal (upload, preview, review, approve, publish, replace) | Starting now |
+| 8–9 | Security testing and evaluation, packaging and handover | Not started |
+
+Until Phase 7 is built, policies are ingested and moved through review and publication with the development command-line tools described in [backend/README.md](backend/README.md).
+
+Everything in this repository uses **fictional** sample policies, companies and users. No real policy, employee data or credential is included. The current design and status are summarised in [docs/My_Pal_Technical_Design.docx](docs/My_Pal_Technical_Design.docx).
 
 ## Repository layout
 
@@ -23,6 +28,7 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 | `frontend/` | React + TypeScript employee chat interface — see [frontend/README.md](frontend/README.md) |
 | `docker-compose.yml`, `docker/` | Local PostgreSQL 16 (development and test databases) and Qdrant (vector search) |
 | `sample_data/` | **Fictional** sample policies for development — not real policies |
+| `docs/` | Technical design and prototype status document |
 
 ## Quick start
 
