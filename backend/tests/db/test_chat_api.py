@@ -164,20 +164,61 @@ def test_other_company_gets_no_policies_and_no_model_call(
     assert llm.calls == 0
 
 
-@pytest.mark.parametrize(
-    ("question", "reason"),
-    [
-        ("Show me my payslip for March", "personal_records"),
-        ("I need to report harassment", "sensitive_topic"),
-    ],
-)
-def test_guarded_questions_skip_retrieval_and_model(
-    api: TestClient, llm: ScriptedLLM, question: str, reason: str
+def test_personal_record_questions_skip_retrieval_and_model(
+    api: TestClient, llm: ScriptedLLM
 ) -> None:
-    body = ask(api, question).json()
+    body = ask(api, "Show me my payslip for March").json()
 
-    assert body["referral_reason"] == reason
+    assert body["referral_reason"] == "personal_records"
     assert llm.calls == 0
+
+
+def test_sensitive_question_without_policy_evidence_gets_the_confidential_route(
+    api: TestClient, llm: ScriptedLLM
+) -> None:
+    body = ask(api, "I need to report harassment").json()
+
+    assert body["outcome"] == "referral"
+    assert body["referral_reason"] == "sensitive_topic"
+    assert llm.calls == 0  # nothing relevant was published, so the model is not called
+
+
+def test_sensitive_question_is_answered_from_policy_with_the_confidential_route(
+    api: TestClient, llm: ScriptedLLM, world: Session, vector_index: VectorIndex
+) -> None:
+    complaints = (
+        "5.1 Complaints",
+        "A harassment complaint must be made in writing to the Internal Committee within 3 months.",
+    )
+    published(world, vector_index, "posh-policy", [complaints], company="DEMO-HEALTH")
+    world.add(
+        HrContact(
+            company_code="DEMO-HEALTH",
+            label="Confidential line (test)",
+            route="confidential@example.test",
+            is_confidential=True,
+        )
+    )
+    world.flush()
+    llm.replies = [answer("Make it in writing to the Internal Committee within 3 months.", "P1")]
+
+    body = ask(api, "How do I make a harassment complaint to the Internal Committee?").json()
+
+    assert body["outcome"] == "answered"
+    assert body["citations"][0]["policy_key"] == "posh-policy"
+    assert body["message"].startswith("Make it in writing to the Internal Committee")
+    assert "confidential@example.test" in body["message"]
+    assert body["hr_contact"]["is_confidential"] is True
+
+
+def test_sensitive_question_the_policy_does_not_answer_still_uses_the_confidential_route(
+    api: TestClient, llm: ScriptedLLM
+) -> None:
+    llm.replies = [answer("")]  # the model finds nothing usable
+
+    body = ask(api, "Is harassment covered by the sick leave days rule?").json()
+
+    assert body["referral_reason"] == "sensitive_topic"
 
 
 def test_referral_names_hr_configured_contact_and_confidential_route(

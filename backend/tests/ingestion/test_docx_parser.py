@@ -1,5 +1,28 @@
+import pytest
+
 from mypal.ingestion.docx_parser import parse_docx
 from tests.ingestion.builders import docx_bytes
+
+
+@pytest.mark.parametrize(
+    ("raw", "text"),
+    [
+        # A definition laid out as Term<TAB>Meaning keeps its boundary.
+        (
+            "Immediate Family\tSpouse, Children & Dependent Parents.",
+            "Immediate Family: Spouse, Children & Dependent Parents.",
+        ),
+        # A number or short marker before the tab is only a label.
+        ("3.1\tCasual leave rules apply.", "3.1 Casual leave rules apply."),
+        ("a)\tSubmit the form.", "a) Submit the form."),
+        ("Note:\tApproval is required.", "Note: Approval is required."),
+        ("\tIndented text.", "Indented text."),
+    ],
+)
+def test_tab_separated_columns_keep_the_term_boundary(raw: str, text: str) -> None:
+    [block] = parse_docx(docx_bytes([("p", raw)])).blocks
+
+    assert block.text == text
 
 
 def test_heading_styles_and_numbering_give_levels() -> None:

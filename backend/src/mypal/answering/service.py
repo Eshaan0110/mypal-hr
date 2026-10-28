@@ -49,6 +49,10 @@ SENSITIVE_MESSAGE = (
     "This may be a sensitive matter, so please raise it through the confidential HR route: "
     "{contact}. Please do not share personal details in this chat."
 )
+CONFIDENTIAL_NOTE = (
+    "If this concerns your own situation, you can raise it confidentially through {contact}. "
+    "Please do not share personal details in this chat."
+)
 GENERIC_CONTACT = "your designated HR contact"
 
 
@@ -93,15 +97,20 @@ def _answer(
     no_model = (None, (None, None))
     question = question.strip()
 
-    # 1. Guard: personal records and sensitive topics go straight to HR.
+    # 1. Guard: personal records go straight to HR. Sensitive topics are answered from the
+    #    policy when possible, but every outcome carries the confidential route.
     guard = check_question(question)
-    if guard is not None:
+    if guard is not None and guard.reason == "personal_records":
         return (_referral(session, principal, guard.reason), *no_model, None)
+    sensitive = guard is not None
+
+    def refer(reason: ReferralReason) -> ChatResponse:
+        return _referral(session, principal, "sensitive_topic" if sensitive else reason)
 
     # 2. Scope: which published, in-effect versions apply to this employee?
     allowed = allowed_version_ids(session, principal, today)
     if not allowed:
-        return (_referral(session, principal, "no_applicable_policy"), *no_model, None)
+        return (refer("no_applicable_policy"), *no_model, None)
 
     # 3. Retrieve (hybrid: meaning + keywords, fused), only inside the allowed versions.
     retrieval_started = time.perf_counter()
@@ -118,12 +127,12 @@ def _answer(
     #    without spending a model call. Uses cosine similarity, which (unlike BM25 or RRF
     #    scores) is comparable from one question to the next.
     if top_score is None or top_score < deps.settings.retrieval_min_score:
-        return (_referral(session, principal, "insufficient_evidence"), *no_model, top_score)
+        return (refer("insufficient_evidence"), *no_model, top_score)
 
     chunks = _load_chunks(session, result.chunks, allowed)
     if not chunks:  # index and database disagree; never answer from unverified text
         logger.warning("retrieved chunks not found among allowed versions")
-        return (_referral(session, principal, "insufficient_evidence"), *no_model, top_score)
+        return (refer("insufficient_evidence"), *no_model, top_score)
 
     # 5. Ask the model, with passages labelled P1..Pn.
     labelled = {f"P{i}": row for i, row in enumerate(chunks, start=1)}
@@ -141,7 +150,7 @@ def _answer(
         )
     except GenerationUnavailable as exc:
         logger.warning("language model unavailable: %s", exc)
-        return (_referral(session, principal, "generation_unavailable"), *no_model, top_score)
+        return (refer("generation_unavailable"), *no_model, top_score)
     finally:
         timings.generation_ms = _elapsed_ms(generation_started)
     tokens = (reply.prompt_tokens, reply.completion_tokens)
@@ -150,7 +159,7 @@ def _answer(
         model_answer = ModelAnswer.model_validate_json(reply.content)
     except ValueError:
         logger.warning("model returned output that does not match the answer schema")
-        return (_referral(session, principal, "validation_failed"), reply.model, tokens, top_score)
+        return (refer("validation_failed"), reply.model, tokens, top_score)
 
     # 6. Validate before anything reaches the employee.
     check = validate_answer(
@@ -159,10 +168,10 @@ def _answer(
     )
     if not check.ok:
         logger.warning("answer failed validation: %s", "; ".join(check.problems))
-        return (_referral(session, principal, "validation_failed"), reply.model, tokens, top_score)
+        return (refer("validation_failed"), reply.model, tokens, top_score)
 
     if model_answer.outcome == "not_in_policy":
-        return (_referral(session, principal, "not_in_policy"), reply.model, tokens, top_score)
+        return (refer("not_in_policy"), reply.model, tokens, top_score)
     if model_answer.outcome == "needs_clarification":
         response = ChatResponse(
             answer_id=uuid.uuid4(),
@@ -173,11 +182,17 @@ def _answer(
 
     # 7. Answered: citations come from the database, for exactly the passages the model cited.
     citations = [_citation(*labelled[label]) for label in check.cited_labels]
+    message = strip_inline_labels(model_answer.answer)
+    contact = None
+    if sensitive:
+        contact = _find_hr_contact(session, principal, confidential=True)
+        message += "\n\n" + CONFIDENTIAL_NOTE.format(contact=_contact_text(contact))
     response = ChatResponse(
         answer_id=uuid.uuid4(),
         outcome=AnswerOutcome.ANSWERED,
-        message=strip_inline_labels(model_answer.answer),
+        message=message,
         citations=citations,
+        hr_contact=contact,
     )
     return response, reply.model, tokens, top_score
 
@@ -236,7 +251,6 @@ def _citation(chunk: Chunk, version: PolicyVersion, policy: Policy) -> Citation:
 def _referral(session: Session, principal: Principal, reason: ReferralReason) -> ChatResponse:
     confidential = reason == "sensitive_topic"
     contact = _find_hr_contact(session, principal, confidential)
-    contact_text = f"{contact.label} ({contact.route})" if contact else GENERIC_CONTACT
     template = {
         "personal_records": PERSONAL_RECORDS_MESSAGE,
         "sensitive_topic": SENSITIVE_MESSAGE,
@@ -244,10 +258,14 @@ def _referral(session: Session, principal: Principal, reason: ReferralReason) ->
     return ChatResponse(
         answer_id=uuid.uuid4(),
         outcome=AnswerOutcome.REFERRAL,
-        message=template.format(contact=contact_text),
+        message=template.format(contact=_contact_text(contact)),
         referral_reason=reason,
         hr_contact=contact,
     )
+
+
+def _contact_text(contact: HrContactOut | None) -> str:
+    return f"{contact.label} ({contact.route})" if contact else GENERIC_CONTACT
 
 
 def _find_hr_contact(

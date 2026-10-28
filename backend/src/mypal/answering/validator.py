@@ -19,9 +19,14 @@ from mypal.answering.prompts import ModelAnswer
 
 # "P2", "[P2]", " p2 " -> "P2"
 _LABEL = re.compile(r"^\[?\s*(P\d+)\s*\]?$", re.IGNORECASE)
-# Only bracketed markers such as "[P1]" or "[P1, P2]": a bare "P1" may be real text (form P1).
-_INLINE_LABEL = re.compile(r"\s*\[\s*P\d+(?:\s*,\s*P\d+)*\s*\]", re.IGNORECASE)
+# Only bracketed markers such as "[P1]", "[P1, P2]" or "(P2)": a bare "P1" may be real text
+# (form P1). Left in place, the digits of a marker would also count as unsupported numbers.
+_INLINE_LABEL = re.compile(
+    r"\s*(?:\[\s*P\d+(?:\s*,\s*P\d+)*\s*\]|\(\s*P\d+(?:\s*,\s*P\d+)*\s*\))", re.IGNORECASE
+)
 _NUMBER = re.compile(r"\d[\d,]*(?:\.\d+)?")
+# "1. ", "2) ", "(3) " at the start of a line: the model's own list numbering, not a policy value.
+_LIST_MARKER = re.compile(r"^\s*\(?\d{1,2}[.)]\s+", re.MULTILINE)
 
 
 @dataclass
@@ -76,7 +81,7 @@ def validate_answer(answer: ModelAnswer, passages: dict[str, str]) -> Validation
         return result
 
     supported = set().union(*(numbers_in(passages[label]) for label in labels))
-    unsupported = sorted(numbers_in(text) - supported)
+    unsupported = sorted(numbers_in(_LIST_MARKER.sub("", text)) - supported)
     if unsupported:
         result.problems.append(f"numbers not found in the cited passages: {', '.join(unsupported)}")
     return result

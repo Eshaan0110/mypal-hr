@@ -1,8 +1,11 @@
 """Checks applied to the question BEFORE any retrieval or model call.
 
-Two kinds of question are routed straight to HR, as the concept note requires:
-- requests for personal records (balances, payslips) - out of scope, the system has no such data;
-- sensitive matters (harassment, grievances, disciplinary issues) - shown the confidential route.
+Two kinds of question are recognised, as the concept note requires:
+- requests for personal records (balances, payslips) - routed straight to HR: out of scope, the
+  system has no such data;
+- sensitive matters (harassment, grievances, disciplinary issues) - always shown the
+  confidential route. They are still answered from the policy when it covers them (e.g. "Does
+  POSH cover interns?"): blocking them hid the very policy employees need most.
 
 These keyword lists are a deliberately simple starting point for HR to review and extend. They
 will miss paraphrases; the model's own "not_in_policy" outcome and the validator are further

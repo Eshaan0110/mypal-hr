@@ -96,6 +96,25 @@ def test_invented_number_fails_validation() -> None:
     assert "12" in result.problems[0]
 
 
+def test_list_numbering_is_not_treated_as_a_policy_number() -> None:
+    text = "There are two steps:\n1. Apply in HRMS.\n2) Take 10 days of sick leave."
+
+    assert validate_answer(_answer(text, "P1"), PASSAGES).ok
+
+
+def test_parenthesised_citation_marker_is_not_treated_as_a_number() -> None:
+    assert validate_answer(_answer("You get 10 days of sick leave (P1).", "P1"), PASSAGES).ok
+
+
+def test_invented_number_inside_a_numbered_list_still_fails() -> None:
+    text = "1. Apply in HRMS.\n2. You get 12 days of sick leave."
+
+    result = validate_answer(_answer(text, "P1"), PASSAGES)
+
+    assert not result.ok
+    assert "12" in result.problems[0]
+
+
 def test_number_from_an_uncited_passage_fails_validation() -> None:
     # 3,000 is in P2, but the answer only cites P1.
     assert not validate_answer(_answer("The allowance is INR 3,000.", "P1"), PASSAGES).ok
@@ -139,6 +158,7 @@ def test_question_cannot_close_the_question_tag() -> None:
         ("10 days per year [P1].", "10 days per year."),
         ("See the rules [P2, P3] before applying.", "See the rules before applying."),
         ("Use form P1 to apply.", "Use form P1 to apply."),  # bare text is left alone
+        ("Donations need approval (P2).", "Donations need approval."),
     ],
 )
 def test_inline_citation_markers_are_removed_cleanly(raw: str, clean: str) -> None:

@@ -66,7 +66,7 @@ uv run mypal-ingest show <version-id> --full                              # insp
 What the pipeline does:
 
 1. **File checks** — format decided from file content, not name; PDF and DOCX only; 20 MB limit; zip-bomb guard; encrypted PDFs rejected.
-2. **Parsing** — headings (level from section numbering, else font size or Word heading style), paragraphs, bullet lists and tables, in reading order. PDF running headers/footers are removed. Word documents have no page numbers.
+2. **Parsing** — headings (level from section numbering, else font size or Word heading style), paragraphs, bullet lists and tables, in reading order. PDF running headers/footers are removed. In Word documents, definitions laid out as `Term` + tab + `Meaning` keep their boundary (`Term: Meaning`); Word documents have no page numbers.
 3. **Quality report** — flags pages with no text layer (likely scans needing OCR), undecodable text, missing headings and extracted tables to verify. A document with no readable text is **blocked**.
 4. **Chunking** — one section never mixes with another; text packed up to ~250 words and split at sentence boundaries; tables are separate chunks, split by rows with the header repeated. Each chunk keeps its heading path, section number and page range for citations.
 5. **Storage** — draft version, scopes, chunks and an audit event are written in one transaction. Duplicate files, reused version labels and unknown scope codes are rejected.
@@ -100,12 +100,12 @@ Retrieval quality is measured with `uv run mypal-eval-retrieval` — see [eval/R
 
 How a question is answered (`answering/service.py`):
 
-1. **Guard** — personal-record requests (payslips, balances) and sensitive topics (harassment, grievances) are referred to HR immediately; sensitive topics get the confidential route.
+1. **Guard** — personal-record requests (payslips, balances) are referred to HR immediately. Sensitive topics (harassment, grievances) are still answered from the policy when it covers them, but every reply, answer or referral, includes the confidential HR route.
 2. **Scope gate** — Postgres lists the versions this employee may see: active, already in effect, and matching their company / location / category. Unknown attributes only match "all" scopes.
 3. **Retrieve (hybrid)** — Qdrant runs a meaning (dense) search and a BM25 keyword search, both *only inside that list*; the two rankings are merged with Reciprocal Rank Fusion, and a cross-encoder reranker re-orders the top 10.
 4. **Confidence gate** — if no allowed passage reaches cosine similarity `MYPAL_RETRIEVAL_MIN_SCORE` (0.55), refer to HR without calling the model.
-5. **Generate** — the model receives passages labelled P1..Pn as data, with strict rules, and returns JSON (answer, citations, clarification question). The outcome is derived in code, not chosen by the model.
-6. **Validate** — citations must refer to supplied passages, and every number in the answer must appear in the cited passages. Any failure → referral.
+5. **Generate** — the model receives passages labelled P1..Pn as data, with strict rules (answer completely, never a bare yes/no; flag cases the policy does not clearly settle instead of deciding them), and returns JSON (answer, citations, clarification question). The outcome is derived in code, not chosen by the model.
+6. **Validate** — citations must refer to supplied passages, and every number in the answer must appear in the cited passages (the model's own list numbering such as "1." is ignored). Any failure → referral.
 7. **Cite** — citations (policy, version, section, page, effective date, link) are built from Postgres, never from model text.
 
 Every question writes one `query_metrics` row (answer id, outcome, cited versions, timings, tokens, top score) — no question text, no answer text, no user identity.

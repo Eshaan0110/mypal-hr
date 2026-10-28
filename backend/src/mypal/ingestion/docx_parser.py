@@ -65,8 +65,23 @@ def parse_docx(content: bytes) -> ParsedDocument:
     return document
 
 
+def _join_tab_columns(text: str) -> str:
+    """Policies often lay out definitions as "Term<TAB>Meaning". Plain whitespace collapsing
+    turns that into one run-on phrase ("Immediate Family Spouse, Children ..."), so the term
+    boundary is kept as "Term: Meaning". A leading number or marker ("3.1<TAB>Casual leave",
+    "a)<TAB>...") is only a label and joins with a space."""
+    parts = [part.strip() for part in text.split("\t") if part.strip()]
+    if len(parts) < 2:
+        return text
+    head = parts[0]
+    separator = " " if not any(c.isalpha() for c in head) or len(head) <= 2 else ": "
+    if head.endswith((":", "-", "–")):
+        separator = " "
+    return head + separator + " ".join(parts[1:])
+
+
 def _paragraph_block(paragraph: Paragraph) -> tuple[Block | None, int]:
-    text = normalise_text(paragraph.text)
+    text = normalise_text(_join_tab_columns(paragraph.text))
     if not text:
         return None, 0
     style = (paragraph.style.name if paragraph.style is not None else "") or ""
