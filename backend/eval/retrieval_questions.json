@@ -1,9 +1,9 @@
 {
   "description": "Retrieval evaluation questions for the FICTIONAL sample policies (Demo Health Services). Each question lists the policy sections that a good search must return. Questions with an empty 'expected' list are not covered by any policy and should be referred to HR. This is a development set written by the developer, NOT the HR-approved golden set required in Phase 8.",
   "documents": [
-    {"file": "leave-policy-v1.pdf", "policy_key": "leave-policy"},
-    {"file": "travel-reimbursement-policy-v1.docx", "policy_key": "travel-reimbursement-policy"},
-    {"file": "salary-advance-policy-v1.pdf", "policy_key": "salary-advance-policy"}
+    {"file": "leave-policy-v1.pdf", "policy_key": "leave-policy", "title": "Leave Policy"},
+    {"file": "travel-reimbursement-policy-v1.docx", "policy_key": "travel-reimbursement-policy", "title": "Travel Reimbursement Policy"},
+    {"file": "salary-advance-policy-v1.pdf", "policy_key": "salary-advance-policy", "title": "Salary Advance Policy"}
   ],
   "questions": [
     {"id": "exact-01", "type": "exact", "question": "How many days of sick leave per calendar year?", "expected": ["leave-policy#3.2"]},

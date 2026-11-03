@@ -3,12 +3,18 @@ import type {
   ChatResponse,
   FeedbackRating,
   FeedbackReason,
+  PolicySummary,
   Principal,
+  ReferenceData,
+  VersionAction,
+  VersionDetail,
 } from './types'
 
 // Answers from a local model can take a minute on development hardware.
 const CHAT_TIMEOUT_MS = 180_000
 const DEFAULT_TIMEOUT_MS = 15_000
+// Publishing embeds every passage of the document; uploading parses it.
+const ADMIN_WRITE_TIMEOUT_MS = 120_000
 
 export class ApiError extends Error {
   readonly status: number
@@ -34,7 +40,9 @@ async function request<T>(
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? DEFAULT_TIMEOUT_MS)
   const headers: Record<string, string> = {}
-  if (options.body !== undefined) headers['Content-Type'] = 'application/json'
+  const isForm = options.body instanceof FormData
+  // For FormData the browser sets the multipart Content-Type (with its boundary) itself.
+  if (options.body !== undefined && !isForm) headers['Content-Type'] = 'application/json'
   if (options.devUser) headers['X-Dev-User'] = options.devUser
 
   let response: Response
@@ -42,7 +50,12 @@ async function request<T>(
     response = await fetch(path, {
       method: options.method ?? 'GET',
       headers,
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      body:
+        options.body === undefined
+          ? undefined
+          : isForm
+            ? (options.body as FormData)
+            : JSON.stringify(options.body),
       signal: controller.signal,
     })
   } catch (error) {
@@ -99,5 +112,42 @@ export const api = {
 
   devUsers(): Promise<Principal[]> {
     return request('/api/dev/users')
+  },
+
+  // --- HR administration: every call is checked server-side for the hr_admin role ---
+
+  adminPolicies(devUser: string): Promise<PolicySummary[]> {
+    return request('/api/admin/policies', { devUser })
+  },
+
+  adminReference(devUser: string): Promise<ReferenceData> {
+    return request('/api/admin/reference', { devUser })
+  },
+
+  adminVersion(versionId: string, devUser: string): Promise<VersionDetail> {
+    return request(`/api/admin/versions/${encodeURIComponent(versionId)}`, { devUser })
+  },
+
+  adminUpload(form: FormData, devUser: string): Promise<VersionDetail> {
+    return request('/api/admin/versions', {
+      method: 'POST',
+      body: form,
+      devUser,
+      timeoutMs: ADMIN_WRITE_TIMEOUT_MS,
+    })
+  },
+
+  adminAction(
+    versionId: string,
+    action: VersionAction,
+    devUser: string,
+    reason?: string,
+  ): Promise<VersionDetail> {
+    return request(`/api/admin/versions/${encodeURIComponent(versionId)}/${action}`, {
+      method: 'POST',
+      body: reason === undefined ? undefined : { reason },
+      devUser,
+      timeoutMs: ADMIN_WRITE_TIMEOUT_MS,
+    })
   },
 }

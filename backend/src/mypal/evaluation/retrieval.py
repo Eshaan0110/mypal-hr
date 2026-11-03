@@ -129,7 +129,8 @@ def _index_documents(
         result = parse_file(path.read_bytes(), path.name)
         version_id = uuid.uuid4()
         chunk_ids = [uuid.uuid4() for _ in result.chunks]
-        chunk_texts = [passage_text(c.heading_path, c.text) for c in result.chunks]
+        title = document.get("title")
+        chunk_texts = [passage_text(c.heading_path, c.text, title) for c in result.chunks]
         retriever.index_version(version_id, chunk_ids, chunk_texts)
         for chunk_id, chunk, text in zip(chunk_ids, result.chunks, chunk_texts, strict=True):
             labels[chunk_id] = f"{document['policy_key']}#{chunk.section_ref or '-'}"

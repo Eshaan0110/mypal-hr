@@ -11,6 +11,7 @@ const USERS: Principal[] = [
     company_code: 'DEMO-HEALTH',
     location_code: 'DEMO-NORTH',
     category_code: 'PERMANENT',
+    roles: [],
     is_development_login: true,
   },
   {
@@ -18,6 +19,7 @@ const USERS: Principal[] = [
     company_code: 'DEMO-OTHER',
     location_code: null,
     category_code: 'PERMANENT',
+    roles: [],
     is_development_login: true,
   },
 ]

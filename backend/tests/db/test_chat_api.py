@@ -245,6 +245,22 @@ def test_referral_names_hr_configured_contact_and_confidential_route(
     assert sensitive["hr_contact"]["route"] == "confidential@example.test"
 
 
+def test_question_naming_a_policy_prefers_that_policys_section(
+    api: TestClient, llm: ScriptedLLM, world: Session, vector_index: VectorIndex
+) -> None:
+    """The other policy's wording matches the question slightly better; only the policy title
+    (indexed with every passage) lets the named policy's section win."""
+    conduct = ("9 Exceptions", "Exceptions are not allowed under this policy.")
+    salary = ("9 Exceptions", "Exceptions to this policy are not allowed.")
+    published(world, vector_index, "conduct-code", [conduct], company="DEMO-HEALTH")
+    published(world, vector_index, "salary-advance", [salary], company="DEMO-HEALTH")
+    llm.replies = [answer("Exceptions are not allowed.", "P1")]
+
+    body = ask(api, "Are exceptions allowed under the salary advance policy?").json()
+
+    assert body["citations"][0]["policy_key"] == "salary-advance"
+
+
 # --- Security boundaries ----------------------------------------------------------------------
 
 

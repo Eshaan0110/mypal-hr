@@ -92,3 +92,14 @@ def test_old_single_vector_layout_is_detected(vector_index: VectorIndex) -> None
 
     vector_index.recreate(256)
     vector_index.ensure_collection(256)  # the new layout is accepted
+
+
+def test_indexed_text_carries_the_policy_title_and_headings() -> None:
+    from mypal.retrieval.embeddings import passage_text
+
+    text = passage_text(
+        ["Introduction", "Definitions"], "Immediate family: spouse.", "Salary Advance"
+    )
+
+    assert text == "Salary Advance > Introduction > Definitions\nImmediate family: spouse."
+    assert passage_text([], "Body only.") == "Body only."

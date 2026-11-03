@@ -42,10 +42,11 @@ schemes with different rules): leave "answer" empty and ask ONE short question i
 "clarification_question". Otherwise leave "clarification_question" empty.
 7. Do not grant exceptions or decide an individual case that depends on facts not in the \
 passages; state the rule and say HR must confirm the individual case.
-8. If the passages cover the topic but do not clearly settle the employee's exact case (for \
-example, the case falls exactly on a boundary between two stated rules, or an entitlement is \
-mentioned without its amount): say what the policy does state, say plainly that it does not \
-clearly cover this case, and advise confirming with HR. Never resolve such a gap yourself.
+8. If the passages answer the question in general but the employee's exact case is not \
+stated (for example, it falls exactly on a boundary between two stated rules): still answer \
+with what the policy states, then add one sentence that the policy does not state this exact \
+case and HR should confirm it. Do not decide the exact case yourself, and do not leave the \
+answer empty for this reason.
 9. Write in plain, concise English. No headings, no markdown tables.
 """
 

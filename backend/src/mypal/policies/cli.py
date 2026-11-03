@@ -1,9 +1,12 @@
-"""Development command-line tool for the policy lifecycle (the HR admin portal replaces it in
-Phase 7). The same lifecycle rules apply as in the portal: four-eyes approval, audit records.
+"""Command-line tool for the policy lifecycle. The HR admin portal is the normal way to do this;
+the CLI stays for development and as a recovery route if the portal is unavailable. The same
+lifecycle rules apply: four-eyes approval, audit records.
 
     uv run mypal-policy submit  VERSION_ID --actor hr-uploader@example.test
     uv run mypal-policy approve VERSION_ID --actor hr-reviewer@example.test
+    uv run mypal-policy reject  VERSION_ID --actor hr-reviewer@example.test --reason "..."
     uv run mypal-policy publish VERSION_ID --actor hr-reviewer@example.test
+    uv run mypal-policy restore VERSION_ID --actor hr-admin@example.test --reason "..."
     uv run mypal-policy reindex [--recreate]      rebuild the search index from Postgres
 
 `--actor` is self-declared in this development tool; the portal takes it from the login.
@@ -32,10 +35,14 @@ def main(argv: list[str] | None = None) -> int:
         ("submit", "draft -> in_review"),
         ("approve", "in_review -> approved (approver must differ from uploader)"),
         ("publish", "approved -> active; index chunks; supersede the previous version"),
+        ("reject", "in_review -> rejected (needs --reason)"),
+        ("restore", "rollback: superseded -> active again (needs --reason)"),
     ):
         command = commands.add_parser(name, help=help_text)
         command.add_argument("version_id", type=uuid.UUID)
         command.add_argument("--actor", required=True, help="who performs the action")
+        if name in ("reject", "restore"):
+            command.add_argument("--reason", required=True, help="recorded in the audit trail")
         command.set_defaults(command=name)
     reindex = commands.add_parser("reindex", help="rebuild the search index for active versions")
     reindex.add_argument(
@@ -56,6 +63,12 @@ def main(argv: list[str] | None = None) -> int:
                 version = lifecycle.submit_for_review(session, args.version_id, args.actor)
             elif args.command == "approve":
                 version = lifecycle.approve(session, args.version_id, args.actor)
+            elif args.command == "reject":
+                version = lifecycle.reject(session, args.version_id, args.actor, args.reason)
+            elif args.command == "restore":
+                version = lifecycle.restore(
+                    session, args.version_id, args.actor, args.reason, create_retriever(settings)
+                )
             else:
                 version = lifecycle.publish(
                     session,
@@ -88,7 +101,7 @@ def _reindex(session, settings: Settings, recreate: bool) -> int:  # noqa: ANN00
         retriever.index_version(
             version.id,
             [c.id for c in chunks],
-            [passage_text(c.heading_path, c.text) for c in chunks],
+            [passage_text(c.heading_path, c.text, version.policy.title) for c in chunks],
         )
         print(f"indexed {version.id} ({len(chunks)} chunks)")
     print(

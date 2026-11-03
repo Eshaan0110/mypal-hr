@@ -66,4 +66,15 @@ hit@1 by question type:
 | Keep hybrid (BM25) as the candidate generator | No measured gain here, negligible cost (~10 ms). Real HR documents contain acronyms and codes (CL, PL, LTA, ESIC, form numbers) the small dense model may not know; BM25 finds those by exact match | The HR golden set shows BM25 never contributes → switch `MYPAL_RETRIEVAL_MODE=dense` |
 | Gate lowered 0.65 → 0.55 | 0/33 answerable wrongly referred (was 5/33). Only clearly unrelated questions are stopped early; the rest are handled by the model's "not in policy" path and the validator | Real policies give a different score distribution |
 
+## Update (2026-10-29): policy title added to the indexed text
+
+Each passage is now embedded and reranked as `policy title > headings > text` (previously `headings > text`). Reason: on HR's question set for the real policies, questions that named a policy ("...under the salary advance policy") retrieved similar sections of *other* policies, because the policy name appeared nowhere in the indexed text. Same models and settings as above:
+
+| Configuration | hit@1 | hit@3 | hit@5 | MRR |
+|---|---|---|---|---|
+| hybrid + reranker, without title (2026-10-17) | 85% | 91% | 100% | 0.89 |
+| **hybrid + reranker, with title** (2026-10-29) | **88%** | **94%** | 97% | **0.91** |
+
+Better on three measures; one paraphrase (`paraphrase-05`) dropped out of the top 5. The fictional set has only three policies with distinct vocabulary, so it shows little of the benefit; the real-policy question set is the better test. Full results: `results/retrieval-20261029-093222.json`. After upgrading, rebuild the index with `uv run mypal-policy reindex --recreate`.
+
 **Second safety layer, checked with the real model (Ollama `qwen3.5:9b`) at threshold 0.55:** the four unanswerable questions that now pass the gate (dress code, work from home, gym membership, overtime) were all refused as "not in policy". Of the four answerable questions the old gate wrongly refused, two were answered correctly and two received reasonable clarification questions ("medical certificate" alone; "interns", which the policy calls trainees).

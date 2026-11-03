@@ -8,8 +8,13 @@ Publishing order matters for safety:
 1. index the new version's chunks in Qdrant (harmless on its own: retrieval only searches
    versions Postgres says are active, and this one is not active yet);
 2. in one database transaction, mark the old active version superseded and the new one active.
-If step 2 fails, employees keep getting the old version. Superseded points stay in the index so a
-rollback (Phase 7) does not need re-embedding; the scope filter already excludes them.
+If step 2 fails, employees keep getting the old version. Superseded points stay in the index; the
+scope filter already excludes them.
+
+Rollback (`restore`) puts a superseded version back in effect with the same two steps: re-index
+it (so its search points are guaranteed to exist and match its chunks), then swap the statuses in
+one transaction. It needs no new approval - the version was approved by two people before - but
+it needs a written reason, which goes into the audit trail.
 """
 
 import uuid
@@ -58,6 +63,21 @@ def approve(
     return _transition(session, version, Status.APPROVED, actor, "approve", request_id)
 
 
+def reject(
+    session: Session, version_id: uuid.UUID, actor: str, reason: str, request_id: str | None = None
+) -> PolicyVersion:
+    version = _load(session, version_id)
+    _require_status(version, Status.IN_REVIEW, "rejected")
+    if actor == version.created_by:
+        raise LifecycleError(
+            "The person who uploaded a version cannot review it (four-eyes rule).",
+            code="four_eyes_violation",
+        )
+    return _transition(
+        session, version, Status.REJECTED, actor, "reject", request_id, _reason(reason)
+    )
+
+
 def publish(
     session: Session,
     version_id: uuid.UUID,
@@ -74,29 +94,70 @@ def publish(
             "not supported in the prototype."
         )
 
-    # Step 1: index (outside the database transaction's critical section).
-    chunks = list(
-        session.scalars(select(Chunk).where(Chunk.version_id == version.id).order_by(Chunk.ordinal))
-    )
-    if not chunks:
-        raise LifecycleError("The version has no chunks to publish.")
-    retriever.index_version(
-        version.id, [c.id for c in chunks], [passage_text(c.heading_path, c.text) for c in chunks]
-    )
-
-    # Step 2: switch which version is active.
-    previous = session.scalar(
-        select(PolicyVersion).where(
-            PolicyVersion.policy_id == version.policy_id,
-            PolicyVersion.status == Status.ACTIVE,
-        )
-    )
+    _index(session, version, retriever)  # step 1
+    previous = _current_active(session, version)  # step 2: switch which version is active
     if previous is not None:
         _transition(session, previous, Status.SUPERSEDED, actor, "supersede", request_id)
         session.flush()  # free the "one active version" slot before activating the new one
         version.supersedes_version_id = previous.id
     version.published_at = datetime.now(UTC)
     return _transition(session, version, Status.ACTIVE, actor, "publish", request_id)
+
+
+def restore(
+    session: Session,
+    version_id: uuid.UUID,
+    actor: str,
+    reason: str,
+    retriever: Retriever,
+    request_id: str | None = None,
+) -> PolicyVersion:
+    """Rollback: make a superseded version the active one again (e.g. the new version turned
+    out to be wrong). The currently active version, if any, becomes superseded."""
+    version = _load(session, version_id)
+    _require_status(version, Status.SUPERSEDED, "restored")
+    details = _reason(reason)
+
+    _index(session, version, retriever)  # step 1
+    current = _current_active(session, version)  # step 2
+    if current is not None:
+        _transition(session, current, Status.SUPERSEDED, actor, "supersede", request_id, details)
+        session.flush()
+    return _transition(session, version, Status.ACTIVE, actor, "restore", request_id, details)
+
+
+def _index(session: Session, version: PolicyVersion, retriever: Retriever) -> None:
+    """Embed and store the version's chunks. Harmless before the status switch: retrieval only
+    searches versions Postgres says are active."""
+    chunks = list(
+        session.scalars(select(Chunk).where(Chunk.version_id == version.id).order_by(Chunk.ordinal))
+    )
+    if not chunks:
+        raise LifecycleError("The version has no chunks to publish.")
+    title = version.policy.title
+    retriever.index_version(
+        version.id,
+        [c.id for c in chunks],
+        [passage_text(c.heading_path, c.text, title) for c in chunks],
+    )
+
+
+def _current_active(session: Session, version: PolicyVersion) -> PolicyVersion | None:
+    return session.scalar(
+        select(PolicyVersion)
+        .where(
+            PolicyVersion.policy_id == version.policy_id,
+            PolicyVersion.status == Status.ACTIVE,
+        )
+        .with_for_update()
+    )
+
+
+def _reason(reason: str) -> dict[str, str]:
+    reason = reason.strip()
+    if len(reason) < 5:
+        raise LifecycleError("Give a short reason (at least 5 characters).", code="reason_required")
+    return {"reason": reason[:1000]}
 
 
 def _load(session: Session, version_id: uuid.UUID) -> PolicyVersion:
@@ -121,6 +182,7 @@ def _transition(
     actor: str,
     action: str,
     request_id: str | None,
+    details: dict[str, str] | None = None,
 ) -> PolicyVersion:
     old_status = version.status
     version.status = new_status
@@ -131,7 +193,7 @@ def _transition(
             entity_type="policy_version",
             entity_id=str(version.id),
             before={"status": old_status.value},
-            after={"status": new_status.value},
+            after={"status": new_status.value, **(details or {})},
             request_id=request_id,
         )
     )

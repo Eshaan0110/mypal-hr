@@ -10,7 +10,7 @@ from typing import Annotated
 
 from fastapi import Depends, Header, Request
 
-from mypal.auth.principal import Principal
+from mypal.auth.principal import HR_ADMIN, Principal
 from mypal.errors import AppError
 
 DEV_USER_HEADER = "X-Dev-User"
@@ -23,7 +23,9 @@ DEV_USERS: dict[str, Principal] = {
         Principal("dev-trainee", "DEMO-HEALTH", None, "TRAINEE"),
         # Belongs to a different (fictional) company: must never see Demo Health policies.
         Principal("dev-other-company", "DEMO-OTHER", None, "PERMANENT"),
-        Principal("dev-hr-admin", "DEMO-HEALTH", None, None, frozenset({"hr_admin"})),
+        # Two HR administrators, so the four-eyes rule (uploader != approver) can be exercised.
+        Principal("dev-hr-admin", "DEMO-HEALTH", None, None, frozenset({HR_ADMIN})),
+        Principal("dev-hr-reviewer", "DEMO-HEALTH", None, None, frozenset({HR_ADMIN})),
     )
 }
 
@@ -51,3 +53,19 @@ def get_principal(
 
 
 CurrentPrincipal = Annotated[Principal, Depends(get_principal)]
+
+
+class Forbidden(AppError):
+    status_code = 403
+    code = "forbidden"
+
+
+def require_hr_admin(principal: CurrentPrincipal) -> Principal:
+    """Server-side gate for the HR administration API. Hiding the admin screens in the browser
+    is only convenience; this check is what actually protects them."""
+    if HR_ADMIN not in principal.roles:
+        raise Forbidden("HR administration is restricted to HR administrators.")
+    return principal
+
+
+HrAdmin = Annotated[Principal, Depends(require_hr_admin)]

@@ -200,13 +200,15 @@ def _answer(
 def _passage_texts(
     session: Session, chunk_ids: list[uuid.UUID], allowed: list[uuid.UUID]
 ) -> dict[uuid.UUID, str]:
-    """Texts for the reranker - loaded from Postgres, and again only from allowed versions."""
+    """Texts for the reranker - loaded from Postgres, and again only from allowed versions. The
+    same text that was indexed (policy title + headings + body)."""
     rows = session.execute(
-        select(Chunk.id, Chunk.heading_path, Chunk.text).where(
-            Chunk.id.in_(chunk_ids), Chunk.version_id.in_(allowed)
-        )
+        select(Chunk.id, Chunk.heading_path, Chunk.text, Policy.title)
+        .join(PolicyVersion, PolicyVersion.id == Chunk.version_id)
+        .join(Policy, Policy.id == PolicyVersion.policy_id)
+        .where(Chunk.id.in_(chunk_ids), Chunk.version_id.in_(allowed))
     ).all()
-    return {row.id: passage_text(row.heading_path, row.text) for row in rows}
+    return {row.id: passage_text(row.heading_path, row.text, row.title) for row in rows}
 
 
 def _load_chunks(

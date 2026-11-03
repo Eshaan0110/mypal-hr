@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { api, ApiError } from './api/client'
 import type { Principal } from './api/types'
+import { AdminPortal } from './components/admin/AdminPortal'
 import { Composer } from './components/Composer'
 import { EmptyState } from './components/EmptyState'
-import { Header } from './components/Header'
+import { Header, type View } from './components/Header'
 import { MessageList } from './components/MessageList'
 import { useChat } from './hooks/useChat'
 
@@ -27,7 +28,10 @@ export default function App() {
   const [confirmed, setConfirmed] = useState<Principal | null>(null)
   const me = confirmed?.subject === devUser ? confirmed : null
   const [startupError, setStartupError] = useState<string | null>(null)
+  const [view, setView] = useState<View>('chat')
   const chat = useChat(devUser)
+  const isAdmin = me?.roles.includes('hr_admin') ?? false
+  const showingAdmin = view === 'admin' && isAdmin && devUser !== null
 
   useEffect(() => {
     api
@@ -67,14 +71,28 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col">
-      <Header devUsers={devUsers} devUser={devUser} onDevUserChange={changeUser} me={me} />
+      <Header
+        devUsers={devUsers}
+        devUser={devUser}
+        onDevUserChange={changeUser}
+        me={me}
+        showAdmin={isAdmin}
+        view={showingAdmin ? 'admin' : 'chat'}
+        onViewChange={setView}
+      />
 
       <div className="border-b border-amber-200 bg-amber-50">
-        <p className="mx-auto max-w-4xl px-4 py-1.5 text-xs text-amber-900">
+        <p className="mx-auto max-w-6xl px-4 py-1.5 text-xs text-amber-900">
           Prototype using <strong>fictional sample policies</strong>. Not for real HR decisions.
         </p>
       </div>
 
+      {showingAdmin && devUser ? (
+        <main className="flex-1 overflow-y-auto">
+          <AdminPortal key={devUser} devUser={devUser} />
+        </main>
+      ) : (
+        <>
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-4xl px-4">
           {startupError && (
@@ -107,6 +125,8 @@ export default function App() {
         clarificationQuestion={chat.clarifying?.clarificationQuestion ?? null}
         onCancelClarification={chat.cancelClarification}
       />
+        </>
+      )}
     </div>
   )
 }

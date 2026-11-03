@@ -13,6 +13,7 @@ def _out(principal, development: bool) -> PrincipalOut:  # noqa: ANN001
         company_code=principal.company_code,
         location_code=principal.location_code,
         category_code=principal.category_code,
+        roles=sorted(principal.roles),
         is_development_login=development,
     )
 

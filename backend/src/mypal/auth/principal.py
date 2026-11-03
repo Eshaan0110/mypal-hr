@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 
+# Role names. With SSO these map from identity-provider groups (decided with IT in Phase 8).
+HR_ADMIN = "hr_admin"
+
 
 @dataclass(frozen=True)
 class Principal:

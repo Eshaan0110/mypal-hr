@@ -9,4 +9,7 @@ class PrincipalOut(BaseModel):
     company_code: str
     location_code: str | None
     category_code: str | None
+    # e.g. ["hr_admin"]. Lets the interface show the HR admin screens; the server still checks
+    # the role on every admin request.
+    roles: list[str]
     is_development_login: bool

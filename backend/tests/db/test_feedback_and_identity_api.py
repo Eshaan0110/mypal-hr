@@ -128,6 +128,7 @@ def test_me_returns_the_logged_in_users_scope_attributes(api: TestClient) -> Non
         "company_code": "DEMO-HEALTH",
         "location_code": "DEMO-NORTH",
         "category_code": "PERMANENT",
+        "roles": [],
         "is_development_login": True,
     }
 

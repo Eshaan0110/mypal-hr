@@ -45,11 +45,15 @@ class SparseEmbedder(Protocol):
     def embed_query(self, text: str) -> SparseEmbedding: ...
 
 
-def passage_text(heading_path: list[str], text: str) -> str:
-    """What gets embedded for a chunk: its headings give context ("Sick leave") that the body
-    text alone may not repeat."""
-    if heading_path:
-        return " > ".join(heading_path) + "\n" + text
+def passage_text(heading_path: list[str], text: str, policy_title: str | None = None) -> str:
+    """What gets embedded for a chunk: the policy title and headings give context ("Employee
+    Salary Advance > Definitions") that the body text alone may not repeat. Without the title, a
+    question naming a policy ("...under the salary advance policy") could not favour that
+    policy's sections over similar sections of other policies (measured on the HR question set).
+    """
+    path = [policy_title, *heading_path] if policy_title else list(heading_path)
+    if path:
+        return " > ".join(path) + "\n" + text
     return text
 
 
