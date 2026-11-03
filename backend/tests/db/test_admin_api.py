@@ -139,6 +139,8 @@ def test_upload_creates_a_draft_with_preview_and_the_uploader_from_the_login(
         ({"scope": ["NO-SUCH-COMPANY"]}, "unknown_scope_code"),
         ({"policy_key": "Leave Policy!"}, "validation_error"),
         ({"scope": ["DEMO-HEALTH:A:B:C"]}, "validation_error"),
+        # Citations render the source link as a clickable link: only http(s) is accepted.
+        ({"source_link": "javascript:alert(document.cookie)"}, "validation_error"),
     ],
 )
 def test_invalid_upload_metadata_is_rejected(api: TestClient, fields: dict, code: str) -> None:

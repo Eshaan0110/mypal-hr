@@ -13,12 +13,13 @@ A retrieval-augmented (RAG) chatbot that answers employee HR policy questions fr
 | 4 | Basic RAG (embeddings, Qdrant, scope gate, grounded cited answers, HR referral) | Done |
 | 5 | Retrieval improvements (BM25 + dense hybrid, RRF, reranker, measured evaluation) | Done |
 | 6 | Employee chat interface (React), feedback, identity endpoints | Done |
-| 7 | HR administration portal (upload, preview, review, approve, publish, replace, restore) | Awaiting review |
-| 8–9 | Security testing and evaluation, packaging and handover | Not started |
+| 7 | HR administration portal (upload, preview, review, approve, publish, replace, restore) | Done |
+| 8 | Security tests by threat, whole-answer evaluation harness, documented limitations | Awaiting review |
+| 9 | Packaging and handover | Not started |
 
 Policies are uploaded, reviewed, approved, published and rolled back in the HR admin portal (HR administrators only); the command-line tools in [backend/README.md](backend/README.md) remain for development and recovery.
 
-Everything in this repository uses **fictional** sample policies, companies and users. No real policy, employee data or credential is included. The current design and status are summarised in [docs/My_Pal_Technical_Design.docx](docs/My_Pal_Technical_Design.docx).
+Everything in this repository uses **fictional** sample policies, companies and users. No real policy, employee data or credential is included. The current design and status are summarised in [docs/My_Pal_Technical_Design.docx](docs/My_Pal_Technical_Design.docx). Security controls, test evidence, evaluation results and known limitations are in [docs/security-and-evaluation.md](docs/security-and-evaluation.md).
 
 ## Repository layout
 
@@ -28,7 +29,7 @@ Everything in this repository uses **fictional** sample policies, companies and 
 | `frontend/` | React + TypeScript employee chat interface and HR admin portal — see [frontend/README.md](frontend/README.md) |
 | `docker-compose.yml`, `docker/` | Local PostgreSQL 16 (development and test databases) and Qdrant (vector search) |
 | `sample_data/` | **Fictional** sample policies for development — not real policies |
-| `docs/` | Technical design and prototype status document |
+| `docs/` | Technical design and prototype status document; security and evaluation report |
 
 ## Quick start
 

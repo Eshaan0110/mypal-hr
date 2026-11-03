@@ -96,6 +96,8 @@ curl -X POST http://127.0.0.1:8000/api/chat -H "Content-Type: application/json" 
 
 Retrieval quality is measured with `uv run mypal-eval-retrieval` — see [eval/README.md](eval/README.md) for the question set, results and the decisions they led to.
 
+Whole answers are measured with `uv run mypal-eval-answers`: outcome, source, required facts, forbidden content and scope, over a fictional golden set (same README). The security controls, their tests and the known limitations are listed in [docs/security-and-evaluation.md](../docs/security-and-evaluation.md).
+
 **Development login stand-in.** Until SSO is available, `X-Dev-User` selects one of a few predefined *fictional* users (`dev-employee-north`, `dev-probationer-south`, `dev-trainee`, `dev-other-company`, and two HR administrators, `dev-hr-admin` and `dev-hr-reviewer`, so the four-eyes rule can be exercised). The caller can only pick a user, never set a company, location or category. Settings refuse to start in staging or production with this mode.
 
 How a question is answered (`answering/service.py`):
@@ -160,8 +162,8 @@ Why this is rollback-safe: publishing and restoring both index the version *befo
 | `src/mypal/ingestion/` | File checks, PDF/DOCX parsers, quality report, chunker, draft storage, CLI |
 | `src/mypal/policies/` | Lifecycle transitions (submit, approve, reject, publish/supersede, restore) with audit; read views for the admin API (`register.py`); `mypal-policy` CLI |
 | `src/mypal/retrieval/` | Dense and BM25 embeddings, Qdrant index, RRF fusion, reranker, `Retriever`, scope gate |
-| `src/mypal/evaluation/` | Retrieval evaluation (`mypal-eval-retrieval`) |
-| `eval/` | Evaluation question set and results |
+| `src/mypal/evaluation/` | Retrieval evaluation (`mypal-eval-retrieval`) and whole-answer evaluation (`mypal-eval-answers`) |
+| `eval/` | Evaluation question sets (retrieval, answers) and results |
 | `src/mypal/answering/` | Guard, prompts, language-model client, validator, answer pipeline; `mypal-ask` CLI |
 | `src/mypal/auth/` | `Principal` and the development login stand-in |
 | `src/mypal/feedback/` | Recording feedback against a real answer |

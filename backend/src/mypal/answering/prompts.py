@@ -37,17 +37,20 @@ deadline separate from an estimated processing time, and do not present a proces
 a promise.
 5. If the passages do NOT contain the answer: leave all three fields empty. Do not offer \
 alternatives and do not ask a question - the employee will be referred to HR. Never guess.
-6. If the answer depends on which option the employee means (for example, two leave types or \
+6. If the passages give different rules for the same thing (for example two different limits \
+or deadlines) and do not say which one applies to this employee, do not choose between them: \
+leave all three fields empty, so the employee is referred to HR.
+7. If the answer depends on which option the employee means (for example, two leave types or \
 schemes with different rules): leave "answer" empty and ask ONE short question in \
 "clarification_question". Otherwise leave "clarification_question" empty.
-7. Do not grant exceptions or decide an individual case that depends on facts not in the \
+8. Do not grant exceptions or decide an individual case that depends on facts not in the \
 passages; state the rule and say HR must confirm the individual case.
-8. If the passages answer the question in general but the employee's exact case is not \
+9. If the passages answer the question in general but the employee's exact case is not \
 stated (for example, it falls exactly on a boundary between two stated rules): still answer \
 with what the policy states, then add one sentence that the policy does not state this exact \
 case and HR should confirm it. Do not decide the exact case yourself, and do not leave the \
 answer empty for this reason.
-9. Write in plain, concise English. No headings, no markdown tables.
+10. Write in plain, concise English. No headings, no markdown tables.
 """
 
 Outcome = Literal["answered", "not_in_policy", "needs_clarification"]
