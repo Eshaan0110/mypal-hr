@@ -14,6 +14,9 @@ from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from qdrant_client.http.exceptions import ResponseHandlingException
+from sqlalchemy.exc import DBAPIError, IntegrityError, InterfaceError, OperationalError
+from sqlalchemy.exc import TimeoutError as PoolTimeoutError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from mypal.observability.request_id import REQUEST_ID_HEADER
@@ -100,6 +103,58 @@ async def _handle_validation_error(request: Request, exc: RequestValidationError
     )
 
 
+async def _handle_integrity_error(request: Request, exc: IntegrityError) -> JSONResponse:
+    # Services check uniqueness and state first and give a specific message. Reaching the
+    # database's own constraint means two requests changed the same thing at the same moment
+    # (e.g. two uploads of one version); the later one is refused, not crashed.
+    logger.warning("database constraint refused a concurrent change", exc_info=exc)
+    return error_response(
+        request,
+        409,
+        "conflict",
+        "This change conflicts with another change made at the same time. Refresh and try again.",
+    )
+
+
+async def _handle_pool_timeout(request: Request, exc: PoolTimeoutError) -> JSONResponse:
+    logger.warning("no free database connection within the pool timeout", exc_info=exc)
+    return error_response(
+        request,
+        503,
+        "server_busy",
+        "My Pal is busy right now. Please try again in a moment.",
+        headers={"Retry-After": "5"},
+    )
+
+
+async def _handle_database_unavailable(request: Request, exc: DBAPIError) -> JSONResponse:
+    # The database is down or the connection broke (found by stopping Postgres under load).
+    # pool_pre_ping reconnects on its own once it is back, so "try again" is accurate.
+    logger.warning("database unavailable", exc_info=exc)
+    return error_response(
+        request,
+        503,
+        "database_unavailable",
+        "My Pal is temporarily unavailable. Please try again in a moment.",
+        headers={"Retry-After": "10"},
+    )
+
+
+async def _handle_search_unavailable(
+    request: Request, exc: ResponseHandlingException
+) -> JSONResponse:
+    # Qdrant could not be reached (found by stopping it during use). No answer can be grounded
+    # without search, so say so instead of guessing; it recovers on its own.
+    logger.warning("search index unavailable", exc_info=exc)
+    return error_response(
+        request,
+        503,
+        "search_unavailable",
+        "Policy search is temporarily unavailable. Please try again in a moment.",
+        headers={"Retry-After": "10"},
+    )
+
+
 async def _handle_unexpected_error(request: Request, exc: Exception) -> JSONResponse:
     logger.exception("unhandled error")
     request_id = _request_id(request)
@@ -114,4 +169,9 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(AppError, _handle_app_error)
     app.add_exception_handler(StarletteHTTPException, _handle_http_exception)
     app.add_exception_handler(RequestValidationError, _handle_validation_error)
+    app.add_exception_handler(IntegrityError, _handle_integrity_error)
+    app.add_exception_handler(PoolTimeoutError, _handle_pool_timeout)
+    app.add_exception_handler(OperationalError, _handle_database_unavailable)
+    app.add_exception_handler(InterfaceError, _handle_database_unavailable)
+    app.add_exception_handler(ResponseHandlingException, _handle_search_unavailable)
     app.add_exception_handler(Exception, _handle_unexpected_error)

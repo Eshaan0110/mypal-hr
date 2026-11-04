@@ -1,16 +1,19 @@
 """POST /api/feedback, GET /api/me and GET /api/dev/users."""
 
+import threading
 import uuid
 from collections.abc import Iterator
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import Engine, delete, select
 from sqlalchemy.orm import Session
 
 from mypal.config import Settings
 from mypal.db.models import AnswerOutcome, Feedback, FeedbackRating, QueryMetric
 from mypal.db.session import get_db_session
+from mypal.feedback.service import record_feedback
 from mypal.main import create_app
 from tests.factories import assert_violates
 
@@ -74,6 +77,46 @@ def test_second_rating_replaces_the_first(
 
     [feedback] = db_session.scalars(select(Feedback)).all()
     assert (feedback.rating, feedback.reason_code) == (FeedbackRating.NOT_HELPFUL, "outdated")
+
+
+def test_simultaneous_ratings_of_one_answer_all_succeed(db_engine: Engine) -> None:
+    """Regression (stress test, 2026-11-04): a double click sent two ratings at once; both saw
+    no row yet, both inserted, and the second failed the unique constraint with a 500."""
+    threads, rounds = 10, 10  # threads stay under the engine's 15-connection pool
+    answers = []
+    with Session(db_engine) as setup:
+        for _ in range(rounds):
+            metric = QueryMetric(
+                request_id="race",
+                answer_id=uuid.uuid4(),
+                outcome=AnswerOutcome.REFERRAL,
+                total_ms=1,
+            )
+            setup.add(metric)
+            answers.append(metric.answer_id)
+        setup.commit()
+
+    def rate(answer: uuid.UUID, start: threading.Barrier, i: int) -> None:
+        with Session(db_engine) as session:  # each request has its own connection
+            session.connection()  # connect before the barrier, so all threads start together
+            start.wait()
+            rating = FeedbackRating.HELPFUL if i % 2 else FeedbackRating.NOT_HELPFUL
+            record_feedback(session, answer, rating, None)
+
+    try:
+        with ThreadPoolExecutor(threads) as pool:
+            for answer in answers:
+                start = threading.Barrier(threads, timeout=30)
+                # map() re-raises the first failure; the round finishes before the next starts.
+                list(pool.map(rate, [answer] * threads, [start] * threads, range(threads)))
+        with Session(db_engine) as check:
+            rows = check.scalars(select(Feedback).where(Feedback.answer_id.in_(answers))).all()
+            assert len(rows) == rounds
+    finally:
+        with Session(db_engine) as cleanup:
+            cleanup.execute(delete(Feedback).where(Feedback.answer_id.in_(answers)))
+            cleanup.execute(delete(QueryMetric).where(QueryMetric.answer_id.in_(answers)))
+            cleanup.commit()
 
 
 def test_reason_is_dropped_for_helpful_ratings(

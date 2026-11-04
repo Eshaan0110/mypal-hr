@@ -1,6 +1,8 @@
+from collections.abc import AsyncIterator
 from datetime import date
 from typing import Annotated
 
+import anyio
 from fastapi import APIRouter, Depends, Request
 
 from mypal.answering.service import AnswerDependencies, answer_question
@@ -14,21 +16,50 @@ from mypal.schemas.errors import ErrorResponse
 router = APIRouter(tags=["chat"])
 
 
-def get_answer_dependencies(request: Request) -> AnswerDependencies:
+async def get_answer_dependencies(request: Request) -> AnswerDependencies:
     return request.app.state.answer_dependencies
 
 
-def get_today() -> date:
+async def get_today() -> date:
     """Injected so tests can control "today" (effective dates)."""
     return date.today()
+
+
+async def chat_slot(request: Request) -> AsyncIterator[None]:
+    """Wait (on the event loop, holding no thread or connection) for one of the
+    `chat_max_concurrent` answering slots. Found by stress testing: 60 simultaneous questions
+    each held a worker thread for up to 11 minutes and starved every other request."""
+    settings = request.app.state.settings
+    state = request.app.state
+    if getattr(state, "chat_slots", None) is None:  # created on the event loop, on first use
+        state.chat_slots = anyio.Semaphore(settings.chat_max_concurrent)
+    slots: anyio.Semaphore = state.chat_slots
+    try:
+        with anyio.fail_after(settings.chat_queue_timeout_seconds):
+            await slots.acquire()
+    except TimeoutError:
+        raise AppError(
+            "My Pal is answering many questions right now. Please try again in a minute.",
+            code="server_busy",
+            status_code=503,
+        ) from None
+    try:
+        yield
+    finally:
+        slots.release()
 
 
 @router.post(
     "/chat",
     response_model=ChatResponse,
-    responses={401: {"model": ErrorResponse}, 422: {"model": ErrorResponse}},
+    responses={
+        401: {"model": ErrorResponse},
+        422: {"model": ErrorResponse},
+        503: {"model": ErrorResponse},
+    },
 )
 def chat(
+    _slot: Annotated[None, Depends(chat_slot)],  # first: wait before anything else is opened
     body: ChatRequest,
     principal: CurrentPrincipal,
     session: DbSession,

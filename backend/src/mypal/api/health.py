@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 @router.get("/health", response_model=HealthResponse)
-def health(settings: SettingsDep) -> HealthResponse:
+async def health(settings: SettingsDep) -> HealthResponse:
     """Liveness: the process is up and serving requests. Deliberately checks nothing else, so a
     database outage does not make an orchestrator restart a healthy process."""
     return HealthResponse(

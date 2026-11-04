@@ -33,7 +33,7 @@ router = APIRouter(
 )
 
 
-def get_retriever(request: Request) -> Retriever:
+async def get_retriever(request: Request) -> Retriever:
     return request.app.state.answer_dependencies.retriever
 
 

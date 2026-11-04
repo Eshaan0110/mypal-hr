@@ -52,6 +52,11 @@ export interface Principal {
   is_development_login: boolean
 }
 
+export interface AppInfo {
+  app: string
+  data_notice: string // what the loaded policies are, e.g. 'fictional sample policies'
+}
+
 export interface ApiErrorBody {
   error: { code: string; message: string; request_id?: string }
 }

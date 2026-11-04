@@ -28,12 +28,18 @@ export default function App() {
   const [confirmed, setConfirmed] = useState<Principal | null>(null)
   const me = confirmed?.subject === devUser ? confirmed : null
   const [startupError, setStartupError] = useState<string | null>(null)
+  // What the loaded policies are, from the server. Unknown until it answers: never assume.
+  const [dataNotice, setDataNotice] = useState<string | null>(null)
   const [view, setView] = useState<View>('chat')
   const chat = useChat(devUser)
   const isAdmin = me?.roles.includes('hr_admin') ?? false
   const showingAdmin = view === 'admin' && isAdmin && devUser !== null
 
   useEffect(() => {
+    api
+      .info()
+      .then((info) => setDataNotice(info.data_notice))
+      .catch(() => setDataNotice(null))
     api
       .devUsers()
       .then((users) => {
@@ -83,7 +89,14 @@ export default function App() {
 
       <div className="border-b border-amber-200 bg-amber-50">
         <p className="mx-auto max-w-6xl px-4 py-1.5 text-xs text-amber-900">
-          Prototype using <strong>fictional sample policies</strong>. Not for real HR decisions.
+          {dataNotice ? (
+            <>
+              Prototype using <strong>{dataNotice}</strong>.{' '}
+            </>
+          ) : (
+            'Prototype. '
+          )}
+          Not for real HR decisions.
         </p>
       </div>
 

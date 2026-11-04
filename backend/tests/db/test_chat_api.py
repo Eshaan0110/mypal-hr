@@ -302,14 +302,25 @@ def test_unknown_dev_user_is_rejected(api: TestClient) -> None:
 
 
 def test_client_cannot_choose_its_own_company(api: TestClient, llm: ScriptedLLM) -> None:
-    """Extra fields in the body are ignored: scope always comes from the login."""
+    """Scope always comes from the login; a body that tries to set it is refused outright."""
     response = api.post(
         "/api/chat",
         json={"message": "How many days of sick leave?", "company_code": "DEMO-HEALTH"},
         headers={"X-Dev-User": "dev-other-company"},
     )
 
-    assert response.json()["referral_reason"] == "no_applicable_policy"
+    assert response.status_code == 422
+    assert llm.calls == 0
+
+
+def test_question_of_only_spaces_is_rejected_before_any_work(
+    api: TestClient, llm: ScriptedLLM
+) -> None:
+    response = ask(api, "   \n\t  ")
+
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_error"
+    assert llm.calls == 0
 
 
 def test_overlong_question_is_rejected(api: TestClient) -> None:

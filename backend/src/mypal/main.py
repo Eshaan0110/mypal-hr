@@ -8,13 +8,14 @@ and tests can create apps with their own Settings.
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+from anyio import to_thread
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from mypal.answering.llm import create_llm
 from mypal.answering.service import AnswerDependencies
-from mypal.api import admin, chat, feedback, health, me
-from mypal.auth.dev import DEV_USER_HEADER
+from mypal.api import admin, chat, feedback, health, info, me
+from mypal.auth.dev import DEV_USER_HEADER, DEV_USERS, load_dev_users
 from mypal.config import Settings, get_settings
 from mypal.db.session import create_db_engine, create_session_factory
 from mypal.errors import register_exception_handlers
@@ -27,6 +28,12 @@ API_PREFIX = "/api"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    # `def` routes run in AnyIO's worker threads (40 by default). Never run more of them than
+    # there are database connections, so a route never blocks waiting for one.
+    settings: Settings = app.state.settings
+    to_thread.current_default_thread_limiter().total_tokens = (
+        settings.database_pool_size + settings.database_max_overflow
+    )
     yield
     # On shutdown, close pooled database connections cleanly.
     app.state.engine.dispose()
@@ -44,6 +51,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
     app.state.settings = settings
+    # The users the development login offers: the built-in fictional ones, or those of a
+    # separately loaded data set.
+    app.state.dev_users = (
+        load_dev_users(settings.dev_users_file) if settings.dev_users_file else DEV_USERS
+    )
     app.state.engine = create_db_engine(settings)
     app.state.session_factory = create_session_factory(app.state.engine)
     # None of these connect or load a model yet; that happens on first use.
@@ -66,6 +78,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     register_exception_handlers(app)
     app.include_router(health.router, prefix=API_PREFIX)
+    app.include_router(info.router, prefix=API_PREFIX)
     app.include_router(chat.router, prefix=API_PREFIX)
     app.include_router(feedback.router, prefix=API_PREFIX)
     app.include_router(me.router, prefix=API_PREFIX)

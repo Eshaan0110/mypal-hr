@@ -115,10 +115,10 @@ The retrieval evaluation is in [backend/eval/README.md](../backend/eval/README.m
 7. **Conflict handling relies on the model.** Rule 6 tells the model not to choose between conflicting rules. A model that ignores it may answer from one of them. The answer is then still grounded and cited, but incomplete.
 8. **Short answers.** The 9B model sometimes answers "Yes" or "No" without the rule. A stronger model (IT's GPU hosting) is expected to help, which should be measured with the same evaluation.
 9. **Not covered:**
-   - rate limiting or abuse protection;
-   - a dependency vulnerability scan;
+   - rate limiting per user (there is only the overall chat limit, section 6);
+   - dependency scanning in a pipeline (it was run by hand on 2026-11-04, section 6);
    - penetration testing;
-   - load testing;
+   - load testing at more than one machine's scale (section 6 covers one machine);
    - checks for anyone who can write to Postgres or Qdrant directly;
    - testing the original upload files for malware.
 10. **Small evaluation sets.** 41 fictional and 98 real questions; one question is about 1–2.5 percentage points. The automatic checks do not judge completeness; every answer is in the results file for a human to review.
@@ -140,3 +140,25 @@ uv run mypal-eval-retrieval --rerank-model Xenova/ms-marco-MiniLM-L-6-v2
 ```
 
 For HR's own set, keep the question file and its results **outside the repository**, then run `uv run mypal-eval-answers --questions <path>`. Results are written next to the question file.
+
+## 6. Stress and failure testing (2026-11-04)
+
+Run against a disposable Docker copy with fictional data, through nginx as a browser would, plus floods from inside the Docker network. The scripts are not in the repository (they create and publish test versions). What they did and what they found:
+
+| Area | What was tried | Result |
+|---|---|---|
+| Hostile chat input | Empty, spaces only, 1,001 characters, wrong types, unknown fields, malformed JSON, form body, 2 MB body; null bytes, control characters, emoji, right-to-left text, homoglyphs, SQL and HTML injection, a fake JSON answer | All refused (422) or answered safely. Injected text was never echoed as an answer, and data was intact afterwards. **Fixed:** a question of only spaces, and a body with extra fields such as `company_code`, are now refused (they used to be ignored). |
+| Login abuse | No user, unknown user, 8 KB header, changed case; employee calling admin routes; bad and unknown version ids, path traversal | 401, 403, 404 or 422 every time, no details leaked |
+| Uploads | Empty, renamed text or program, cut-off PDF, 21 MB file, a Word file that expands to 300 MB, `.txt`, odd filenames, bad dates, unknown scope codes, `javascript:` links, 5 KB titles, odd policy keys | All refused with a clear code; the 300 MB expansion is stopped before it is unpacked |
+| Simultaneous lifecycle actions | 10 submits, 10 approvals, 8 publishes, 6 restores of one version at once; 6 uploads of one new version at once | Exactly one succeeds each time, the rest get 409, and there is always exactly one active version. **Fixed:** simultaneous duplicate uploads used to give 500 errors (now 409). |
+| Feedback | 20 ratings of one answer at once | **Fixed:** used to give 500 errors (two inserts racing for one row); now one atomic insert-or-update. Regression test: `test_simultaneous_ratings_of_one_answer_all_succeed`. |
+| Load | 2,000 requests, 100 at a time, on readiness, `/api/me` and the admin register; 160 chat requests, 20 at a time | **Fixed: under 100 simultaneous database requests the whole backend froze.** All 15 connections were held while every worker thread waited for one, and the thread that would release a connection could not run. Now sessions close on the event loop, worker threads are capped at the connection pool size (40), and an exhausted pool answers 503 instead of hanging. After the fix: no errors, about 260 requests a second inside Docker. |
+| Many simultaneous questions | 60 real questions at once, checking liveness every 2 s | **Fixed:** before, each question held a worker thread for up to 11 minutes, 19 of 171 liveness checks failed, and answers came long after the browser's 180 s limit. Now 4 questions are answered at a time and the rest wait without holding anything. A question that cannot start within 90 s gets "busy, try again". 0 liveness failures. |
+| Dependency outages | Qdrant stopped; Postgres stopped; model server unreachable; each brought back | **Fixed:** Qdrant or Postgres down used to give 500 errors; now 503 with "try again". Liveness stays up, and the app recovers by itself when the service returns (no restart). An unreachable model gives a referral to HR. |
+| Dependencies | `pip-audit` on the locked backend packages, `npm audit` on the frontend | **Fixed:** 58 known vulnerabilities in pillow, filelock and certifi (indirect dependencies) were removed by upgrading them and fastembed 0.9.0 → 0.9.1. Retrieval results are unchanged (hit@1 88%, MRR 0.91). Now 0 known. |
+
+**Accepted by design:** feedback can be sent by anyone who knows an answer's id. Feedback stores no identity, so ownership cannot be checked; the id is a random UUID only the person who received the answer has seen.
+
+**Capacity.** One backend process on one laptop. The limit is the language model: on this laptop it answers about one question every 10–20 s, so roughly 4–6 questions a minute. Under a burst, some people get "busy, try again". IT's GPU-hosted model, with `MYPAL_CHAT_MAX_CONCURRENT` raised to match its parallelism, is the way to serve more.
+
+**Answer quality after the fixes.** `mypal-eval-answers` on the fictional set: 37 pass, 3 partial, 1 fail, **0 unsafe**; right source 29/29 (`backend/eval/results/answers-20261104-153501.json`). The one failure, `clarify-01`, was referred to HR instead of being asked a clarification question. It passed 3 of 3 re-runs: this is the model's run-to-run variance (section 4, item 8), not a change in behaviour. None of the fixes touch the answer pipeline.

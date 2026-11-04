@@ -12,6 +12,7 @@ traffic cannot flood the table.
 import uuid
 
 from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
 from mypal.db.models import Feedback, FeedbackRating, QueryMetric
@@ -30,14 +31,21 @@ def record_feedback(
     if rating is FeedbackRating.HELPFUL:
         reason_code = None  # reasons only explain "not helpful"
 
-    feedback = session.scalar(select(Feedback).where(Feedback.answer_id == answer_id))
-    if feedback is None:
-        feedback = Feedback(answer_id=answer_id)
-        session.add(feedback)
-    # One rating per answer: a second submission is a change of mind, not a second vote.
-    feedback.rating = rating
-    feedback.reason_code = reason_code
-    feedback.outcome = answer.outcome
-    feedback.cited_version_ids = list(answer.cited_version_ids)
+    # One rating per answer: a second submission is a change of mind, not a second vote. A single
+    # INSERT ... ON CONFLICT is atomic, so simultaneous submissions (a double click, two tabs)
+    # cannot both try to insert and trip the unique constraint.
+    values = {
+        "rating": rating,
+        "reason_code": reason_code,
+        "outcome": answer.outcome,
+        "cited_version_ids": list(answer.cited_version_ids),
+    }
+    statement = (
+        insert(Feedback)
+        .values(answer_id=answer_id, **values)
+        .on_conflict_do_update(index_elements=[Feedback.answer_id], set_=values)
+        .returning(Feedback)
+    )
+    feedback = session.scalars(statement, execution_options={"populate_existing": True}).one()
     session.commit()
     return feedback

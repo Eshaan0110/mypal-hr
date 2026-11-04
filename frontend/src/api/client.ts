@@ -1,5 +1,6 @@
 import type {
   ApiErrorBody,
+  AppInfo,
   ChatResponse,
   FeedbackRating,
   FeedbackReason,
@@ -112,6 +113,10 @@ export const api = {
 
   devUsers(): Promise<Principal[]> {
     return request('/api/dev/users')
+  },
+
+  info(): Promise<AppInfo> {
+    return request('/api/info')
   },
 
   // --- HR administration: every call is checked server-side for the hr_admin role ---

@@ -113,10 +113,16 @@ All backend settings are environment variables with the `MYPAL_` prefix, read in
 | `MYPAL_RERANKER_MODEL` | `Xenova/ms-marco-MiniLM-L-6-v2` | Empty for none. |
 | `MYPAL_RETRIEVAL_MODE` | `hybrid` | `dense` or `hybrid`. |
 | `MYPAL_RETRIEVAL_MIN_SCORE` | `0.55` | Confidence gate. Re-measure on real policies. |
+| `MYPAL_CHAT_MAX_CONCURRENT` | `4` | Questions answered at the same time. Others wait without holding a thread or a database connection. Raise it only if the model server answers several questions in parallel. |
+| `MYPAL_CHAT_QUEUE_TIMEOUT_SECONDS` | `90` | A question that cannot start within this time gets "busy, try again" (503). Keep it plus the slowest answer under the browser's 180 s limit. |
+| `MYPAL_DATABASE_POOL_SIZE`, `MYPAL_DATABASE_MAX_OVERFLOW` | `20`, `20` | Database connections. The backend runs at most this many worker threads (40), so a request never waits for a connection. Postgres allows 100 by default. |
+| `MYPAL_DATABASE_POOL_TIMEOUT` | `10` | Seconds to wait for a free connection before answering "busy" (503). |
 | `MYPAL_ENVIRONMENT` | `development` | `development`, `test`, `staging` or `production`. The dev login only allows the first two. |
 | `MYPAL_LOG_JSON` | `true` | `false` gives readable lines in a terminal. |
 | `MYPAL_LOG_LEVEL` | `INFO` | |
 | `MYPAL_CORS_ORIGINS` | `[]` | Not needed when the frontend is served from the same origin (both run modes). |
+| `MYPAL_DEV_USERS_FILE` | none | Path to a JSON file of development login users that **replaces** the built-in fictional ones (section 5). Development login only. |
+| `MYPAL_DATA_NOTICE` | `fictional sample policies` | What the loaded policies are, shown in the banner on every screen. |
 
 Root `.env` (Docker Compose):
 
@@ -151,6 +157,30 @@ Docker profile: the `migrate` service runs `alembic upgrade head` on every `up`.
 - **Fictional demo data:** `mypal-ingest load-demo` (section 2).
 
 **Real policies** must not be stored in this repository or committed anywhere public. Load them through the portal into a database that is not shared. For a separate test data set, use a different database and a different `MYPAL_QDRANT_COLLECTION`.
+
+### Running the app on a separate data set
+
+The fictional dev users belong to the fictional company, so they see nothing in a data set with other scope codes. To use a separate set (for example real policies loaded on one machine), keep these **outside the repository**:
+
+1. A users file, a JSON list in the same shape as the built-in users. Subjects must start with `dev-`, codes are upper case, and the only role is `hr_admin`. Include two HR administrators, so that the four-eyes rule can be used.
+
+   ```json
+   [
+     {"subject": "dev-acme-employee", "company_code": "ACME", "location_code": null, "category_code": "STAFF"},
+     {"subject": "dev-acme-hr-admin", "company_code": "ACME", "roles": ["hr_admin"]},
+     {"subject": "dev-acme-hr-reviewer", "company_code": "ACME", "roles": ["hr_admin"]}
+   ]
+   ```
+
+2. A start script that sets these and runs the backend:
+   - `MYPAL_DATABASE_URL`: the other database;
+   - `MYPAL_QDRANT_COLLECTION`: the other collection;
+   - `MYPAL_DEV_USERS_FILE`: the users file;
+   - `MYPAL_DATA_NOTICE`: what the banner should say.
+
+   Environment variables override `backend/.env`. After loading or changing that data set, run `mypal-policy reindex --recreate` with the same variables.
+
+An invalid users file stops the backend at startup with the reason. The data set's own HR contacts must be loaded too, or referrals fall back to "contact your designated HR contact".
 
 In the Docker profile, run any backend command with `docker compose exec backend <command>`, for example `docker compose exec backend mypal-policy reindex`.
 

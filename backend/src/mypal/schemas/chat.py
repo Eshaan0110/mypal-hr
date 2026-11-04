@@ -4,7 +4,7 @@ import uuid
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from mypal.db.models import AnswerOutcome
 
@@ -21,7 +21,10 @@ ReferralReason = Literal[
 
 class ChatRequest(BaseModel):
     # Only the question. Who is asking (company, location, category) comes from the login,
-    # never from the request body.
+    # never from the request body - so any other field is refused, not silently ignored.
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    # Stripped first, so a question of only spaces is refused before any search or write.
     message: str = Field(min_length=1)
 
 

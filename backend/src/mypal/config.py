@@ -7,7 +7,7 @@ from enum import StrEnum
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, FilePath, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -39,6 +39,13 @@ class Settings(BaseSettings):
     database_url: SecretStr
     # Seconds to wait when opening a connection, so an unreachable database fails fast.
     database_connect_timeout: int = Field(default=5, ge=1, le=60)
+    # Connection pool. The app also caps its worker threads at pool_size + max_overflow, so a
+    # request thread never waits for a connection (found by stress testing: with 40 threads and
+    # 15 connections, 100 simultaneous requests froze the whole backend).
+    database_pool_size: int = Field(default=20, ge=1, le=100)
+    database_max_overflow: int = Field(default=20, ge=0, le=100)
+    # Seconds a request waits for a free connection before getting "busy, try again" (503).
+    database_pool_timeout: float = Field(default=10, gt=0, le=60)
 
     # --- Search index (Qdrant) ---
     qdrant_url: str = "http://127.0.0.1:6333"
@@ -77,11 +84,23 @@ class Settings(BaseSettings):
     # the validator. Re-measure on real HR policies.
     retrieval_min_score: float = Field(default=0.55, ge=0, le=1)
     question_max_chars: int = Field(default=1000, ge=50, le=5000)
+    # Questions answered at the same time. More would only queue inside the model server while
+    # holding a worker thread and a database connection each; extra questions wait for a free
+    # slot without holding either. A question that cannot start within the queue timeout gets
+    # "busy, try again" (503), well inside the browser's 180 s limit.
+    chat_max_concurrent: int = Field(default=4, ge=1, le=64)
+    chat_queue_timeout_seconds: float = Field(default=90, gt=0, le=600)
 
     # --- Authentication ---
     # "dev" = the development stand-in (pick a predefined fictional test user by header).
     # Not allowed outside development/test; real SSO replaces it (Phase 8).
     auth_mode: Literal["dev"] = "dev"
+    # Optional JSON file of development users that REPLACES the built-in fictional ones, for a
+    # separately loaded data set. Keep it outside the repository (see docs/operations.md).
+    dev_users_file: FilePath | None = None
+
+    # What the loaded policies are, shown in the banner of every screen.
+    data_notice: str = Field(default="fictional sample policies", min_length=1, max_length=120)
 
     @model_validator(mode="after")
     def _dev_auth_only_in_development(self) -> "Settings":

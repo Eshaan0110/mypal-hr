@@ -26,7 +26,8 @@ The state of the My Pal prototype at the end of the planned build (phases 0–9)
 - **Search:** hybrid dense and BM25 search with reciprocal rank fusion and a cross-encoder reranker, filtered by scope inside Qdrant and re-checked against Postgres.
 - **Privacy:** feedback and metrics store no question text, answer text or user identity.
 - **Evidence:**
-  - 244 backend and 21 frontend automated tests;
+  - 265 backend and 23 frontend automated tests;
+  - stress and failure testing, with every problem it found fixed (security-and-evaluation.md §6);
   - security tests organised by threat;
   - retrieval and whole-answer evaluation tools;
   - a reproducible Docker setup, verified on a fresh copy.
@@ -86,7 +87,8 @@ Nothing below can be settled in code alone. Each needs a decision or data from H
 | Public repository | Accidental commit of real data or secrets | `.gitignore` for `.env` and data; after a secret-scanning alert (2026-10-16), no password is in any committed file; real files kept outside the repository |
 | `.env` secrets in plain text | Local disclosure | Development only; a secret store is needed (#4) |
 | No backups scheduled | Data loss | Manual `pg_dump` procedure in operations.md §7 |
-| Dependencies not scanned for vulnerabilities | Known CVEs may be present | Versions pinned in `uv.lock` and `package-lock.json`; scanning is in the plan |
+| New vulnerabilities in dependencies | Known CVEs appear over time | Scanned by hand on 2026-11-04: 0 known after upgrades. Versions pinned in `uv.lock` and `package-lock.json`; automatic scanning is in the hardening plan |
+| A burst of questions on the laptop model | Some people get "busy, try again" | 4 questions at a time, others queue up to 90 s; the app itself stays responsive (stress-tested) |
 
 ## 7. Production-hardening plan
 

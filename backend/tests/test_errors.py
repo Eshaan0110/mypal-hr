@@ -4,6 +4,9 @@ import pytest
 from fastapi import APIRouter
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, Field
+from qdrant_client.http.exceptions import ResponseHandlingException
+from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import TimeoutError as PoolTimeoutError
 
 from mypal.config import Settings
 from mypal.errors import AppError
@@ -30,6 +33,26 @@ def app_error() -> None:
 @probe.get("/crash")
 def crash() -> None:
     raise RuntimeError("secret internal detail: postgres://user:pw@host")
+
+
+@probe.get("/integrity")
+def integrity() -> None:
+    raise IntegrityError("INSERT ...", {}, Exception('duplicate key "uq_versions_label"'))
+
+
+@probe.get("/pool-timeout")
+def pool_timeout() -> None:
+    raise PoolTimeoutError("QueuePool limit of size 20 overflow 20 reached")
+
+
+@probe.get("/db-down")
+def db_down() -> None:
+    raise OperationalError("SELECT 1", {}, Exception("connection refused: postgres:5432"))
+
+
+@probe.get("/search-down")
+def search_down() -> None:
+    raise ResponseHandlingException(Exception("Connection refused: qdrant:6333"))
 
 
 @pytest.fixture
@@ -82,3 +105,40 @@ def test_unexpected_error_hides_internal_details(probe_client: TestClient) -> No
     assert body["error"]["code"] == "internal_error"
     assert "postgres" not in response.text
     assert body["error"]["request_id"] == response.headers["X-Request-ID"]
+
+
+def test_concurrent_change_conflict_is_a_409_without_database_details(
+    probe_client: TestClient,
+) -> None:
+    response = probe_client.get("/api/_probe/integrity")
+
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "conflict"
+    assert "uq_versions_label" not in response.text
+
+
+def test_exhausted_connection_pool_is_a_503_with_retry_after(probe_client: TestClient) -> None:
+    response = probe_client.get("/api/_probe/pool-timeout")
+
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == "server_busy"
+    assert response.headers["Retry-After"] == "5"
+    assert "QueuePool" not in response.text
+
+
+@pytest.mark.parametrize(
+    ("path", "code", "hidden"),
+    [
+        ("/api/_probe/db-down", "database_unavailable", "postgres:5432"),
+        ("/api/_probe/search-down", "search_unavailable", "qdrant:6333"),
+    ],
+)
+def test_unavailable_dependency_is_a_503_without_details(
+    probe_client: TestClient, path: str, code: str, hidden: str
+) -> None:
+    response = probe_client.get(path)
+
+    assert response.status_code == 503
+    assert response.json()["error"]["code"] == code
+    assert "Retry-After" in response.headers
+    assert hidden not in response.text

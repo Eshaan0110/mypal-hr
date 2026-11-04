@@ -69,6 +69,7 @@ type Call = { url: string; method: string; body: unknown; headers: Record<string
 
 let calls: Call[]
 let chatReplies: (ChatResponse | { status: number; body: unknown })[]
+let dataNotice: string | null
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -80,6 +81,7 @@ function json(body: unknown, status = 200): Response {
 beforeEach(() => {
   calls = []
   chatReplies = []
+  dataNotice = 'fictional sample policies'
   localStorage.clear()
   vi.stubGlobal(
     'fetch',
@@ -92,6 +94,11 @@ beforeEach(() => {
       }
       calls.push(call)
       if (url === '/api/dev/users') return json(USERS)
+      if (url === '/api/info') {
+        return dataNotice === null
+          ? json({ error: { code: 'internal_error', message: 'Failed' } }, 500)
+          : json({ app: 'My Pal', data_notice: dataNotice })
+      }
       if (url === '/api/me') {
         return json(USERS.find((u) => u.subject === call.headers['X-Dev-User']))
       }
@@ -119,6 +126,23 @@ async function ask(question: string) {
 }
 
 describe('My Pal chat', () => {
+  it('names the loaded policies in the banner, as reported by the server', async () => {
+    dataNotice = 'the policies loaded on this machine'
+    render(<App />)
+
+    expect(await screen.findByText('the policies loaded on this machine')).toBeInTheDocument()
+    expect(screen.queryByText(/fictional/)).not.toBeInTheDocument()
+  })
+
+  it('does not claim the policies are fictional when the server cannot say', async () => {
+    dataNotice = null
+    render(<App />)
+
+    expect(await screen.findByText(/Not for real HR decisions/)).toBeInTheDocument()
+    await waitFor(() => expect(calls.some((c) => c.url === '/api/info')).toBe(true))
+    expect(screen.queryByText(/fictional/)).not.toBeInTheDocument()
+  })
+
   it('shows a cited answer and sends the test user as the login', async () => {
     render(<App />)
 

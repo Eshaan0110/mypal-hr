@@ -119,7 +119,8 @@ Other endpoints used by the chat interface:
 |---|---|
 | `POST /api/feedback` | `{answer_id, rating, reason_code?}`. The answer must exist in `query_metrics`; outcome and cited versions are copied from there, never taken from the browser. Reasons are a fixed list; extra fields are rejected. One rating per answer (a second one replaces it). |
 | `GET /api/me` | The logged-in user's scope attributes (company, location, category). |
-| `GET /api/dev/users` | The fictional test users for the development login picker (development mode only). |
+| `GET /api/dev/users` | The test users for the development login picker (development mode only): the built-in fictional users, or those in `MYPAL_DEV_USERS_FILE`. |
+| `GET /api/info` | No login. `{app, data_notice}`: the banner text saying what the loaded policies are (`MYPAL_DATA_NOTICE`). |
 
 ## HR administration (Phase 7)
 
