@@ -2,6 +2,7 @@
 
 uv run mypal-ingest parse FILE                 preview: parse and chunk, store nothing
 uv run mypal-ingest seed-demo                  add the FICTIONAL demo scope codes
+uv run mypal-ingest load-demo                  load and publish the FICTIONAL sample policies
 uv run mypal-ingest ingest FILE --policy-key ... --scope DEMO-HEALTH ...
 uv run mypal-ingest list                       list stored policy versions
 uv run mypal-ingest show VERSION_ID            inspect a stored draft and its chunks
@@ -23,9 +24,15 @@ from mypal.db.models import Chunk, Policy, PolicyVersion
 from mypal.db.session import create_db_engine, create_session_factory
 from mypal.errors import AppError
 from mypal.ingestion.chunker import ChunkDraft
+from mypal.ingestion.demo_policies import load_demo_policies
 from mypal.ingestion.demo_reference import seed_demo_reference_data
 from mypal.ingestion.schemas import DraftMetadata, ScopeInput
 from mypal.ingestion.service import parse_file, store_draft
+from mypal.retrieval.retriever import create_retriever
+
+# backend/src/mypal/ingestion -> repository root. Only valid in a source checkout; inside the
+# Docker image pass --folder /sample_data/policies (mounted read-only by docker-compose.yml).
+SAMPLE_POLICIES = Path(__file__).resolve().parents[4] / "sample_data" / "policies"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -57,6 +64,13 @@ def _parser() -> argparse.ArgumentParser:
 
     seed = commands.add_parser("seed-demo", help="add the fictional demo scope codes")
     seed.set_defaults(handler=_cmd_seed)
+
+    demo = commands.add_parser(
+        "load-demo",
+        help="load the FICTIONAL sample policies into an empty database and publish them",
+    )
+    demo.add_argument("--folder", type=Path, default=SAMPLE_POLICIES)
+    demo.set_defaults(handler=_cmd_load_demo)
 
     ingest = commands.add_parser("ingest", help="parse a file and store it as a DRAFT version")
     ingest.add_argument("file", type=Path)
@@ -104,6 +118,17 @@ def _cmd_seed(_: argparse.Namespace) -> int:
         added = seed_demo_reference_data(session)
         session.commit()
     print(f"Added {added} fictional demo reference code(s).")
+    return 0
+
+
+def _cmd_load_demo(args: argparse.Namespace) -> int:
+    settings = Settings()
+    with create_session_factory(create_db_engine(settings))() as session:
+        steps = load_demo_policies(session, args.folder, create_retriever(settings), date.today())
+        session.commit()
+    for step in steps:
+        print(step)
+    print("The fictional demo policies are loaded. Ask questions as dev-employee-north.")
     return 0
 
 

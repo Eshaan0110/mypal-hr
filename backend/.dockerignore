@@ -1,0 +1,11 @@
+# Only pyproject.toml, uv.lock, README.md, src/, migrations/ and alembic.ini go into the image.
+.venv/
+.env
+.env.*
+data/
+eval/
+tests/
+scripts/
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/

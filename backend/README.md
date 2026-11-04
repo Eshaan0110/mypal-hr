@@ -4,7 +4,7 @@ FastAPI service for the My Pal HR policy chatbot prototype. Python 3.11, managed
 
 ## Setup (from a clean checkout)
 
-Prerequisites: uv and Docker Desktop.
+Prerequisites: uv and Docker Desktop. To run the whole prototype in containers instead, and for backup, update and rollback, see [docs/operations.md](../docs/operations.md).
 
 ```bash
 cp .env.example .env          # repo root: choose a local MYPAL_DB_PASSWORD (never commit .env)
@@ -56,6 +56,7 @@ Turns a PDF or Word policy into a **draft** version with chunks and a quality re
 ```bash
 uv run mypal-ingest parse ../sample_data/policies/leave-policy-v1.pdf     # preview only, stores nothing
 uv run mypal-ingest seed-demo                                             # FICTIONAL scope codes for the samples
+uv run mypal-ingest load-demo                                             # or: load and publish all FICTIONAL samples in one step
 uv run mypal-ingest ingest ../sample_data/policies/leave-policy-v1.pdf     --policy-key leave-policy --title "Leave Policy" --owner "HR Operations (fictional)"     --version v1 --uploaded-by dev-uploader@example.test --effective-from 2026-01-01     --scope "DEMO-HEALTH:*:PERMANENT" --scope "DEMO-HEALTH:*:PROBATION"
 uv run mypal-ingest list                                                  # stored versions
 uv run mypal-ingest show <version-id> --full                              # inspect a draft
@@ -71,7 +72,7 @@ What the pipeline does:
 4. **Chunking** — one section never mixes with another; text packed up to ~250 words and split at sentence boundaries; tables are separate chunks, split by rows with the header repeated. Each chunk keeps its heading path, section number and page range for citations.
 5. **Storage** — draft version, scopes, chunks and an audit event are written in one transaction. Duplicate files, reused version labels and unknown scope codes are rejected.
 
-Sample policies in `../sample_data/` are **fictional**; see its README.
+Sample policies in `../sample_data/` are **fictional**; see its README. `load-demo` uploads them as `dev-hr-admin`, has `dev-hr-reviewer` approve and publish them, and restores leave-policy v1 over v2 — the state the evaluation sets expect. It refuses a database that already holds them.
 
 ## Asking questions (basic RAG)
 

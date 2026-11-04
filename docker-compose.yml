@@ -1,5 +1,12 @@
-# Local development services. Start with:  docker compose up -d
-# Secrets come from the repo-root .env (git-ignored; copy .env.example).
+# Local services. Secrets come from the repo-root .env (git-ignored; copy .env.example).
+#
+#   docker compose up -d                        Postgres + Qdrant only (backend and frontend run
+#                                               on the host with uv and npm - for development)
+#   docker compose --profile app up -d --build  the whole prototype in containers:
+#                                               http://127.0.0.1:8080
+#
+# The language model is NOT a container: Ollama runs on the host (or IT's hosted endpoint is
+# configured with MYPAL_LLM_BASE_URL). See docs/operations.md.
 name: mypal
 
 services:
@@ -13,7 +20,7 @@ services:
       POSTGRES_PASSWORD: ${MYPAL_DB_PASSWORD:?Set MYPAL_DB_PASSWORD in .env - see .env.example}
     ports:
       # Bound to localhost only, so the database is not reachable from the network.
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:${MYPAL_DB_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # Runs once, on first start with an empty volume: creates the separate test database.
@@ -33,10 +40,69 @@ services:
       # Do not send usage telemetry outside the machine.
       QDRANT__TELEMETRY_DISABLED: "true"
     ports:
-      - "127.0.0.1:6333:6333"
+      - "127.0.0.1:${MYPAL_QDRANT_PORT:-6333}:6333"
     volumes:
       - qdrantdata:/qdrant/storage
+
+  # --- profile "app": the backend and frontend as containers -----------------------------------
+
+  # Applies database migrations, then exits. The backend starts only if this succeeded.
+  migrate:
+    profiles: ["app"]
+    build: ./backend
+    command: ["alembic", "upgrade", "head"]
+    environment: &backend-environment
+      MYPAL_ENVIRONMENT: development # the development login stand-in refuses anything else
+      MYPAL_LOG_JSON: "true"
+      MYPAL_DATABASE_URL: postgresql+psycopg://mypal:${MYPAL_DB_PASSWORD}@postgres:5432/mypal
+      MYPAL_QDRANT_URL: http://qdrant:6333
+      MYPAL_QDRANT_API_KEY: ${MYPAL_QDRANT_API_KEY}
+      # Ollama on the host by default; set MYPAL_LLM_BASE_URL in .env for another endpoint.
+      MYPAL_LLM_BASE_URL: ${MYPAL_LLM_BASE_URL:-http://host.docker.internal:11434/v1}
+      MYPAL_LLM_MODEL: ${MYPAL_LLM_MODEL:-qwen3.5:9b}
+      MYPAL_LLM_API_KEY: ${MYPAL_LLM_API_KEY:-} # empty for Ollama
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    profiles: ["app"]
+    build: ./backend
+    environment: *backend-environment
+    # No published port: only the frontend container reaches the API (at http://backend:8000).
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # lets the container reach Ollama on Linux hosts too
+    volumes:
+      - models:/app/data/models # embedding and reranker models, downloaded once
+      # Fictional samples, read-only, for "mypal-ingest load-demo --folder /sample_data/policies"
+      - ./sample_data/policies:/sample_data/policies:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      qdrant:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health/ready', timeout=3)
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: unless-stopped
+
+  frontend:
+    profiles: ["app"]
+    build: ./frontend
+    ports:
+      - "127.0.0.1:${MYPAL_WEB_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   pgdata:
   qdrantdata:
+  models:
